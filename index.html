@@ -427,16 +427,16 @@ footer { padding-block: clamp(36px, 5vw, 64px) calc(36px + env(safe-area-inset-b
   filter: drop-shadow(0 1px 1px rgba(30, 0, 6, .45)) drop-shadow(0 5px 9px rgba(20, 0, 4, .22)); }
 .foot-core, .foot-panel { --mid: linear-gradient(#000 0 0) center / 100% calc(100% - 118px) no-repeat; }
 .foot-core { position: absolute; inset: 0; background: url(img/paper.jpg) 0 0 / 300px auto, #F5FAFD; background-blend-mode: multiply;
-  -webkit-mask: url(img/tear-top-core.png) left top / 600px 60px repeat-x, var(--mid), url(img/tear-bot-core.png) left bottom / 600px 60px repeat-x;
-          mask: url(img/tear-top-core.png) left top / 600px 60px repeat-x, var(--mid), url(img/tear-bot-core.png) left bottom / 600px 60px repeat-x; }
+  -webkit-mask: url(img/tear-top-core.png) left top / 1200px 60px no-repeat, var(--mid), url(img/tear-bot-core.png) left bottom / 1200px 60px no-repeat;
+          mask: url(img/tear-top-core.png) left top / 1200px 60px no-repeat, var(--mid), url(img/tear-bot-core.png) left bottom / 1200px 60px no-repeat; }
 .foot-panel { position: relative;
   --bg: var(--blue); --ink: var(--burg); --tape-bg: var(--white); --tape-ink: var(--burg); --hw: currentColor;
   color: var(--ink);
   background:
     linear-gradient(174deg, rgba(255, 255, 255, .2), rgba(255, 255, 255, 0) 38%, rgba(0, 0, 0, 0) 68%, rgba(10, 30, 50, .07)),
     url(img/paper-blue.jpg) 0 0 / 480px auto, var(--blue);
-  -webkit-mask: url(img/tear-top-paper.png) left top / 600px 60px repeat-x, var(--mid), url(img/tear-bot-paper.png) left bottom / 600px 60px repeat-x;
-          mask: url(img/tear-top-paper.png) left top / 600px 60px repeat-x, var(--mid), url(img/tear-bot-paper.png) left bottom / 600px 60px repeat-x;
+  -webkit-mask: url(img/tear-top-paper.png) left top / 1200px 60px no-repeat, var(--mid), url(img/tear-bot-paper.png) left bottom / 1200px 60px no-repeat;
+          mask: url(img/tear-top-paper.png) left top / 1200px 60px no-repeat, var(--mid), url(img/tear-bot-paper.png) left bottom / 1200px 60px no-repeat;
   padding: clamp(76px, 7vw, 92px) clamp(22px, 4vw, 52px) clamp(70px, 6vw, 84px);
   display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: clamp(20px, 5vw, 72px); }
 .foot-tape { position: absolute; z-index: 2; top: 14px; width: clamp(88px, 9vw, 116px); aspect-ratio: 3.4; background: url(img/tape-white.webp) center / 100% 100% no-repeat; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .22)); }
@@ -516,6 +516,11 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
 @media (max-aspect-ratio: 1/1) { .intro-stage { gap: 28px; } .intro-cap { font-size: 40px; } }
 @media (prefers-reduced-motion: reduce) { .intro, .intro .before { transition: none !important; } .intro.start .before { transform: none; } }
 
+.intro-stage { position: relative; }
+.intro-stage::before, .intro-stage::after { content: ""; position: absolute; z-index: 2; top: -14px; width: clamp(80px, 11%, 120px); aspect-ratio: 3.4;
+  background: url(img/tape-white.webp) center / 100% 100% no-repeat; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .22)); }
+.intro-stage::before { left: 5%; transform: rotate(-9deg); }
+.intro-stage::after { right: 5%; transform: rotate(7deg); }
 .intro-stage > svg { filter: url(#duo-print); background: #fff; transform: rotate(-1deg); box-shadow: 0 12px 30px var(--shadow-c); } /* drawings printed on a white sheet, like the flyers */
 
 /* ---------- tones: blocks that change colour ----------
@@ -660,7 +665,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
 
         <article class="card">
           <div class="card-photo">
-            <div class="chips"><span class="tape sm">2–3 месяца</span><span class="tape sm">Группа до 15</span></div>
+            <div class="chips"><span class="tape sm">2–3 месяца</span><span class="tape sm">Группа до 20</span></div>
             <img src="img/class-group.webp" alt="Группа после занятия" loading="lazy">
           </div>
           <div class="card-body tone-solid">
