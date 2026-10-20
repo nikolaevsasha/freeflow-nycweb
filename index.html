@@ -913,7 +913,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
   let dbg = null;
   const track = (name, p = {}) => {
     const data = { src, ...p };
-    try { if (typeof window.gtag === 'function') window.gtag('event', name, { ...data, transport_type: 'beacon' }); } catch (_) {}
+    try { if (typeof window.gtag === 'function') window.gtag('event', name, data);   // gtag already sends with sendBeacon where it can } catch (_) {}
     if (!DEBUG) return;
     console.log('[track]', name, data);
     if (!dbg) { dbg = document.createElement('div'); dbg.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99;max-width:min(92vw,420px);font:12px/1.35 ui-monospace,monospace;background:rgba(0,0,0,.82);color:#BBE3FC;padding:8px 10px;border-radius:6px;pointer-events:none;white-space:pre-wrap'; document.body.appendChild(dbg); }
