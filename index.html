@@ -24,6 +24,12 @@
       cfg.page_location = u.toString();
     }
     if (q.has('debug')) cfg.debug_mode = true;
+    // ?notrack once on your own phone/laptop: this browser stops counting (?track turns it back on)
+    try {
+      if (q.has('notrack')) localStorage.setItem('ff-notrack', '1');
+      if (q.has('track')) localStorage.removeItem('ff-notrack');
+      if (localStorage.getItem('ff-notrack')) window['ga-disable-G-Y10LQ57XQ2'] = true;
+    } catch (e) {}
     gtag('config', 'G-Y10LQ57XQ2', cfg);
   })();
 </script>
@@ -677,7 +683,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
           <div class="card-body tone-white">
             <h3 class="hand">Голос и речь</h3>
             <p class="meta"><span>Сб, 24 окт · 15:45–18:00</span><span>$45 + американо</span></p>
-            <p class="where"><a href="https://maps.google.com/?q=Rule+25%2F7%2C+54+Eldridge+St%2C+New+York%2C+NY+10002" target="_blank" rel="noopener">Rule 25/7, 54 Eldridge St ↗</a><a href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=%D0%93%D0%BE%D0%BB%D0%BE%D1%81+%D0%B8+%D1%80%D0%B5%D1%87%D1%8C+%C2%B7+freeflow.nyc&amp;dates=20261024T194500Z%2F20261024T220000Z&amp;location=Rule+25%2F7%2C+54+Eldridge+St%2C+New+York%2C+NY+10002&amp;details=%D0%9C%D0%B0%D1%81%D1%82%D0%B5%D1%80-%D0%BA%D0%BB%D0%B0%D1%81%D1%81+%D1%81+%D0%9A%D0%B0%D1%82%D0%B5%D0%B9+%D0%A7%D0%B5%D1%80%D0%B5%D0%BF%D0%B0%D0%BD%D0%BE%D0%B2%D0%BE%D0%B9.+https%3A%2F%2Ffreeflow.nyc" target="_blank" rel="noopener" class="js-cal">+ в календарь</a></p>
+            <p class="where"><a class="js-map" href="https://maps.google.com/?q=Rule+25%2F7%2C+54+Eldridge+St%2C+New+York%2C+NY+10002" target="_blank" rel="noopener">Rule 25/7, 54 Eldridge St ↗</a><a href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=%D0%93%D0%BE%D0%BB%D0%BE%D1%81+%D0%B8+%D1%80%D0%B5%D1%87%D1%8C+%C2%B7+freeflow.nyc&amp;dates=20261024T194500Z%2F20261024T220000Z&amp;location=Rule+25%2F7%2C+54+Eldridge+St%2C+New+York%2C+NY+10002&amp;details=%D0%9C%D0%B0%D1%81%D1%82%D0%B5%D1%80-%D0%BA%D0%BB%D0%B0%D1%81%D1%81+%D1%81+%D0%9A%D0%B0%D1%82%D0%B5%D0%B9+%D0%A7%D0%B5%D1%80%D0%B5%D0%BF%D0%B0%D0%BD%D0%BE%D0%B2%D0%BE%D0%B9.+https%3A%2F%2Ffreeflow.nyc" target="_blank" rel="noopener" class="js-cal">+ в календарь</a></p>
             <div class="desc">
               <p>Два часа с актрисой Катей Черепановой. Без опыта и без оценок.</p>
               <ul>
@@ -688,7 +694,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
             </div>
             <div class="actions">
               <a class="btn sm js-register" href="#events" data-place="card">Записаться →</a>
-              <a class="btn sm light" href="#faq">Подробнее</a>
+              <a class="btn sm light js-details" href="#faq" data-place="card">Подробнее</a>
             </div>
           </div>
         </article>
@@ -922,19 +928,25 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
   // Where the visitor came from: ?src=rule257-art03 on the flyer QR. #qr also works for testing.
   const params = new URLSearchParams(location.search);
   const src = params.get('src') || (location.hash === '#qr' ? 'qr-test' : 'direct');
-  const fromQR = src !== 'direct';
+  const fromQR = /^\d\d-/.test(src) || src === 'rule257' || src === 'qr-test';   // printed QR codes; ig-bio, tg, chat-… are links
   // ---- analytics: one call per event, sent to GA4 (and any tool added later); ?debug=1 shows them on the page ----
   const DEBUG = params.has('debug');
   let dbg = null;
   const track = (name, p = {}) => {
     const data = { src, ...p };
-    try { if (typeof window.gtag === 'function') window.gtag('event', name, data);   // gtag already sends with sendBeacon where it can } catch (_) {}
+    try { if (typeof window.gtag === 'function') window.gtag('event', name, data); } catch (_) {}   // gtag already sends with sendBeacon where it can
     if (!DEBUG) return;
     console.log('[track]', name, data);
     if (!dbg) { dbg = document.createElement('div'); dbg.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99;max-width:min(92vw,420px);font:12px/1.35 ui-monospace,monospace;background:rgba(0,0,0,.82);color:#BBE3FC;padding:8px 10px;border-radius:6px;pointer-events:none;white-space:pre-wrap'; document.body.appendChild(dbg); }
     dbg.textContent = (name + ' ' + JSON.stringify(p) + '\n' + dbg.textContent).split('\n').slice(0, 8).join('\n');
   };
   if (fromQR && !store.get('ff-scan')) { store.set('ff-scan', '1'); track('qr_scan'); }
+  if (params.has('notrack') || params.has('track')) {
+    const t = document.createElement('div');
+    t.textContent = window['ga-disable-G-Y10LQ57XQ2'] ? 'Этот браузер больше не считается в аналитике' : 'Этот браузер снова считается в аналитике';
+    t.style.cssText = 'position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:99;font:14px/1.3 system-ui,sans-serif;background:rgba(0,0,0,.85);color:#fff;padding:10px 14px;border-radius:8px;pointer-events:none';
+    document.body.appendChild(t); setTimeout(() => t.remove(), 4000);
+  }
 
   // Apple devices add the event straight from an .ics file; everyone else gets Google Calendar
   const apple = /iPhone|iPad|Macintosh/.test(navigator.userAgent);
@@ -959,6 +971,8 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
   });
   document.querySelectorAll('.js-ig, .js-tg').forEach(a => a.addEventListener('click', () =>
     track('social_click', { network: a.classList.contains('js-tg') ? 'telegram' : 'instagram', place: a.closest('footer') ? 'footer' : 'header' })));
+  document.querySelectorAll('.js-map').forEach(a => a.addEventListener('click', () => track('map_open')));
+  document.querySelectorAll('.js-details').forEach(a => a.addEventListener('click', () => track('details_click', { place: a.dataset.place })));
   // faq: which answers people look for
   document.querySelectorAll('#faq details').forEach(d => d.addEventListener('toggle', () => { if (d.open) track('faq_open', { q: d.querySelector('summary').textContent.trim() }); }));
   // how far people read: each block once per visit. Starts after the intro, which covers the page
@@ -1428,7 +1442,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
     $('survey-actions').querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => {
       if (b.dataset.act === 'register') track('register_click', { place: form });
       if (b.dataset.act === 'telegram') track('social_click', { network: 'telegram', place: form });
-      if (b.dataset.act === 'details') { closeSurvey(); $('events').scrollIntoView(); }
+      if (b.dataset.act === 'details') { track('details_click', { place: form }); closeSurvey(); $('events').scrollIntoView(); }
     }));
     const lead = $('lead');
     lead.hidden = !LEADS.url; lead.reset(); $('lead-msg').textContent = ''; lead.querySelector('button').disabled = false;
@@ -1460,9 +1474,11 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
     if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); }
     else dlg.setAttribute('open', '');
   }
-  function closeSurvey() { if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); }
+  const onSurveyClose = () => { if ($('survey-result').hidden) track('quiz_close', { form, step }); };   // checkmark, backdrop or Esc before the result
+  function closeSurvey() { if (typeof dlg.close === 'function') dlg.close(); else { dlg.removeAttribute('open'); onSurveyClose(); } }
+  dlg.addEventListener('close', onSurveyClose);
   document.querySelectorAll('.js-open-survey').forEach(b => b.addEventListener('click', () => openSurvey(b.dataset.place || 'other', b.dataset.form || 'quiz')));
-  $('survey-close').addEventListener('click', () => { if ($('survey-result').hidden) track('quiz_close', { form, step }); closeSurvey(); });
+  $('survey-close').addEventListener('click', closeSurvey);
   dlg.addEventListener('click', e => { if (e.target === dlg) closeSurvey(); });
   function afterIntro() { greet(); startViewTracking(); }
 
