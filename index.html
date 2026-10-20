@@ -6,7 +6,8 @@
 <title>freeflow.nyc</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <script>if (location.protocol === 'http:' && /(^|\.)freeflow\.nyc$/.test(location.hostname)) location.replace('https://freeflow.nyc' + location.pathname + location.search + location.hash); document.documentElement.classList.add('js')</script>
-<!-- Google Analytics 4. ?src= (flyer QR, Instagram, Telegram, chats) is turned into utm_* so GA credits the visit -->
+<!-- Google Analytics 4. ?src= (flyer QR, Instagram, Telegram, chats) is turned into utm_* so GA credits the visit;
+     ?at= is the spot where that flyer was left (letter printed under the QR) and goes to utm_term -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y10LQ57XQ2"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -21,6 +22,7 @@
       var u = new URL(location.href);
       u.searchParams.set('utm_source', source); u.searchParams.set('utm_medium', medium);
       u.searchParams.set('utm_campaign', 'mk-2410'); u.searchParams.set('utm_content', src);
+      if (q.get('at')) u.searchParams.set('utm_term', q.get('at').toUpperCase());
       cfg.page_location = u.toString();
     }
     if (q.has('debug')) cfg.debug_mode = true;
@@ -922,12 +924,13 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
   // Where the visitor came from: ?src=rule257-art03 on the flyer QR. #qr also works for testing.
   const params = new URLSearchParams(location.search);
   const src = params.get('src') || (location.hash === '#qr' ? 'qr-test' : 'direct');
+  const spot = (params.get('at') || '').toUpperCase();   // flyer spot letter: R = Rule 25/7, others in SPOTS.md
   const fromQR = /^\d\d-/.test(src) || src === 'rule257' || src === 'qr-test';   // printed QR codes; ig-bio, tg, chat-… are links
   // ---- analytics: one call per event, sent to GA4 (and any tool added later); ?debug=1 shows them on the page ----
   const DEBUG = params.has('debug');
   let dbg = null;
   const track = (name, p = {}) => {
-    const data = { src, ...p };
+    const data = spot ? { src, spot, ...p } : { src, ...p };
     try { if (typeof window.gtag === 'function') window.gtag('event', name, data); } catch (_) {}   // gtag already sends with sendBeacon where it can
     if (!DEBUG) return;
     console.log('[track]', name, data);
@@ -952,7 +955,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
     a.addEventListener('click', () => track('register_click', { place: a.dataset.place || 'other' }));
     if (REGISTER_URL) {
       const u = new URL(REGISTER_URL);
-      u.searchParams.set('utm_source', src);
+      u.searchParams.set('utm_source', spot ? src + '.' + spot : src);
       a.href = u.toString(); a.target = '_blank'; a.rel = 'noopener';
     } else {
       a.href = '#events';
