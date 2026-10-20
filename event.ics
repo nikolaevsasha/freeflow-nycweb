@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//freeflow.nyc//RU
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:2026-10-24-golos-i-rech@freeflow.nyc
+DTSTAMP:20261019T000000Z
+DTSTART:20261024T194500Z
+DTEND:20261024T220000Z
+SUMMARY:Голос и речь · freeflow.nyc
+LOCATION:Rule 25/7\, 54 Eldridge St\, New York\, NY 10002
+DESCRIPTION:Мастер-класс с Катей Черепановой. $45 + американо. https://freeflow.nyc
+URL:https://freeflow.nyc
+BEGIN:VALARM
+TRIGGER:-PT2H
+ACTION:DISPLAY
+DESCRIPTION:freeflow: мастер-класс через 2 часа
+END:VALARM
+END:VEVENT
+END:VCALENDAR

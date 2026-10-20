@@ -1,0 +1,1395 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>freeflow.nyc · голос и речь на русском в Нью-Йорке</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<script>document.documentElement.classList.add('js')</script>
+<meta name="description" content="Мастер-класс по голосу и речи на русском в Нью-Йорке. Ведёт актриса театра и кино Катя Черепанова. Сб, 24 октября, Rule 25/7.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#62121F">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://freeflow.nyc/">
+<meta property="og:title" content="Голос и речь · мастер-класс на русском">
+<meta property="og:description" content="Сб, 24 октября, 15:45–18:00 · Rule 25/7, Manhattan · $45 + американо. Ведёт актриса Катя Черепанова.">
+<meta property="og:image" content="https://freeflow.nyc/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Event", "name": "Голос и речь: мастер-класс на русском", "startDate": "2026-10-24T15:45:00-04:00", "endDate": "2026-10-24T18:00:00-04:00", "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode", "eventStatus": "https://schema.org/EventScheduled", "inLanguage": "ru", "location": {"@type": "Place", "name": "Rule 25/7", "address": {"@type": "PostalAddress", "streetAddress": "54 Eldridge St", "addressLocality": "New York", "addressRegion": "NY", "postalCode": "10002", "addressCountry": "US"}}, "image": ["https://freeflow.nyc/img/og.jpg"], "description": "Два часа с актрисой театра и кино Катей Черепановой: голос, харизма, самопрезентация. На русском, без опыта.", "offers": {"@type": "Offer", "price": "45", "priceCurrency": "USD", "url": "https://partiful.com/e/yQGMDy3r7GFtRmhYNzRN", "availability": "https://schema.org/InStock"}, "performer": {"@type": "Person", "name": "Катя Черепанова"}, "organizer": {"@type": "Organization", "name": "freeflow.nyc", "url": "https://freeflow.nyc"}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: the flyers on a page. Burgundy paper, display words drawn letter by letter with a
+   marker (no font, no two letters alike) and filled with blue paper texture, one giant key word per
+   block, pencil sketches on white sheets taped to the page. Book serif to read, typewriter mono
+   for facts, label-maker stickers. Three colours only: burgundy page, blue ink, white sheets
+   (inside white the ink is burgundy). Single theme on purpose. */
+:root {
+  color-scheme: light;
+  --blue: #BBE3FC;          /* average of the blue paper texture (img/paper-blue.jpg) */
+  --burg: #62121F;
+  --white: #FFFFFF;
+
+  /* semantic tokens. A block that changes colour (see "tones") redefines --bg/--ink and the
+     sticker tokens; the derived tokens right after this block follow it on every element. */
+  --bg: var(--burg);        /* what the current block is painted with */
+  --ink: var(--blue);       /* text, lettering, borders */
+  --hw: url(#ptex) var(--blue); /* paint of the drawn letters: blue paper texture, flat blue as fallback */
+  --surface: var(--white);  /* stickers: speech bubble, light buttons */
+  --surface-ink: var(--burg);
+  --tape-bg: var(--white);  /* label-maker tape */
+  --tape-ink: var(--burg);
+  --hl: var(--white);       /* selection highlight */
+  --hl-ink: var(--burg);
+  --mark-fill: var(--white); /* highlighter swipe behind «подаче.» */
+  --btn-sh: var(--white);   /* button offset shadow */
+  --field: var(--white);    /* survey inputs */
+  --shadow-c: rgba(0, 0, 0, .28);
+
+  --f-display: "Arial Black", "Helvetica Neue", system-ui, sans-serif;
+  --f-text: Caveat, "Comic Sans MS", cursive;
+  --f-label: var(--f-text);
+  --f-tape: var(--f-text);
+
+  --wobble: 255px 14px 225px 14px / 14px 225px 14px 255px;
+  --wobble-2: 14px 225px 14px 255px / 255px 14px 225px 14px;
+  --gutter: max(18px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(18px, env(safe-area-inset-right, 0px));
+}
+/* derived tokens: resolved on every element from the --ink/--bg it inherits */
+* {
+  --soft: color-mix(in srgb, var(--ink) 76%, var(--bg));     /* secondary text */
+  --line: color-mix(in srgb, var(--ink) 34%, transparent);   /* hairlines */
+  --accent: var(--ink);                                      /* labels, focus, ticks */
+  --under: var(--bg);                                        /* paper specks in the lettering */
+  --hatch: color-mix(in srgb, var(--ink) 22%, transparent);  /* photo placeholders */
+  --mouth: var(--ink);                                       /* zip face */
+  --tongue: var(--bg);
+  --zip: var(--ink);
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+/* paper grain in the exact page colour: the grain is desaturated (saturation over white), lifted
+   ~1.6% (colour-dodge) and multiplied with --bg. A plain multiply would tint the blue yellow-green.
+   The same background is used by the intro, the survey dialog and the white sheets. */
+body, .intro, dialog.survey, .sheet {
+  background-color: var(--white);
+  background-image: linear-gradient(var(--bg), var(--bg)), linear-gradient(#040404, #040404), linear-gradient(#fff, #fff), url(img/paper.jpg);
+  background-blend-mode: multiply, color-dodge, saturation, normal;
+}
+/* the page itself: burgundy with the same light paper grain as the printed flyers */
+body { background: url(img/grain-light.png) 0 0 / 240px 240px repeat, var(--bg); background-blend-mode: normal; }
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--f-text);
+  font-size-adjust: .6;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.45;
+  overflow-x: hidden;
+  overflow-x: clip;   /* clip, not hidden: hidden makes body a scroll box and the sticky header then scrolls away */
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+p { margin: 0; }
+:focus-visible { outline: 2.5px solid var(--accent); outline-offset: 3px; }
+::selection { background: var(--hl); color: var(--hl-ink); }
+
+.wrap {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter-r);
+}
+/* big screens: scale the whole layout up instead of leaving wide empty margins */
+.wrap { zoom: var(--z, 1); }
+@media (min-width: 1440px) { :root { --z: 1.12; } }
+@media (min-width: 1680px) { :root { --z: 1.26; } }
+@media (min-width: 1880px) { :root { --z: 1.4; } }
+@media (min-width: 2200px) { :root { --z: 1.6; } }
+@media (min-width: 2600px) { :root { --z: 1.9; } }
+
+/* ---------- type ---------- */
+/* .hand text is redrawn by JS as pencil lettering; the plain text stays for screen readers */
+.hand {
+  font-size-adjust: none;
+  font-family: var(--f-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1.02;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.js .hand:not(.drawn) { visibility: hidden; animation: show-anyway 0s 2s forwards; }
+@keyframes show-anyway { to { visibility: visible; } }
+.hword { display: inline-block; white-space: nowrap; }
+.hw { display: inline-block; vertical-align: -.091em; overflow: visible; fill: none; stroke: var(--hw, currentColor); stroke-linecap: round; stroke-linejoin: round; }
+.hw .hfill { fill: var(--hw, currentColor); stroke: none; }
+.hw .hp, .zsvg .hp { fill: none; stroke: var(--under, var(--bg)); opacity: .45; }
+/* clean-marker lettering (owner's pick): solid strokes only, no pencil hatching or paper specks */
+.hw .hs, .hw .hp, .zsvg .hs, .zsvg .hp { display: none; }
+.hand .accent { color: var(--accent); }
+.sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+h1, h2, h3 { margin: 0; font-weight: 800; }
+h1 { font-size: clamp(46px, 7vw, 84px); }
+h3 { font-size: clamp(22px, 2.4vw, 28px); }
+
+/* giant section words, like Rule 257's OUR VIBE / EVENTS / SPACE */
+.giant {
+  font-size: clamp(52px, 13.5vw, 196px);
+  line-height: .86;
+  letter-spacing: -.01em;
+  margin: 0 0 clamp(22px, 3.5vw, 44px);
+}
+.giant.right { text-align: right; }
+
+.label {
+  font-family: var(--f-label);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0 0 14px;
+}
+.lead { font-size: clamp(18px, 2vw, 21px); color: var(--soft); max-width: 34em; }
+.mark { position: relative; white-space: nowrap; display: inline-block; isolation: isolate; }
+.mark > svg { position: absolute; left: -4%; top: 4%; width: 108%; height: 96%; z-index: -1; overflow: visible; }
+
+/* label-maker stickers */
+.tape {
+  display: inline-block;
+  font-family: var(--f-tape);
+  font-weight: 600;
+  font-size: clamp(22px, 2.6vw, 32px);
+  line-height: 1.1;
+  padding: .12em .34em .16em;
+  background: var(--tape-bg);
+  color: var(--tape-ink);
+  box-shadow: 0 1px 0 var(--shadow-c), 0 3px 8px var(--shadow-c);
+}
+.tape.sm { font-size: 17px; padding: 3px 9px 4px; }
+
+/* ---------- buttons ---------- */
+.btn {
+  -webkit-appearance: none; appearance: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  font-family: var(--f-label); font-weight: 600; font-size: 15px; 
+  text-decoration: none; cursor: pointer;
+  padding: 16px 26px;
+  color: var(--bg); background: var(--ink);
+  border: 2px solid var(--ink); border-radius: var(--wobble);
+  box-shadow: 4px 4px 0 var(--btn-sh);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.btn:hover { transform: translate(-1px, -1px); box-shadow: 6px 6px 0 var(--btn-sh); }
+.btn:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--btn-sh); }
+.btn.ghost { background: transparent; color: var(--ink); box-shadow: 4px 4px 0 var(--line); }
+.btn.ghost:hover { box-shadow: 6px 6px 0 var(--line); }
+.btn.light { background: var(--surface); color: var(--surface-ink); border-color: var(--surface-ink); box-shadow: none; }
+.btn.light:hover { box-shadow: 3px 3px 0 var(--line); }
+.btn.sm { padding: 10px 16px; font-size: 15px; box-shadow: 3px 3px 0 var(--btn-sh); }
+.btn.sm.light { box-shadow: none; }
+.actions { display: flex; flex-wrap: wrap; gap: 14px 16px; align-items: center; }
+
+/* ---------- talking zip-mouth "o" ---------- */
+.zip-o { position: relative; cursor: pointer; }
+.zsvg { overflow: visible; }
+.zsvg .mouth { transform-box: fill-box; transform-origin: right center; transform: scaleX(0); }
+.zsvg .jaw { transform-box: fill-box; transform-origin: center; transform: scaleY(.45); }
+.zsvg .zline { stroke-dasharray: 16 16; stroke-dashoffset: 0; }
+.zsvg .sound { opacity: 0; }
+.talk .zsvg .pull { animation: zf-pull .9s cubic-bezier(.5, 0, .3, 1) forwards; }
+.talk .zsvg .zline { animation: zf-unzip .9s cubic-bezier(.5, 0, .3, 1) forwards; }
+.talk .zsvg .teeth path { animation: zf-fade .16s ease forwards; }
+.talk .zsvg .teeth path:nth-child(1) { animation-delay: .14s; }
+.talk .zsvg .teeth path:nth-child(2) { animation-delay: .3s; }
+.talk .zsvg .teeth path:nth-child(3) { animation-delay: .46s; }
+.talk .zsvg .teeth path:nth-child(4) { animation-delay: .62s; }
+.talk .zsvg .teeth path:nth-child(5) { animation-delay: .78s; }
+.talk .zsvg .mouth { animation: zf-open .9s cubic-bezier(.5, 0, .3, 1) forwards; }
+.talk .zsvg .jaw { animation: zf-talk 2.2s .95s ease-in-out forwards; }
+.talk .zsvg .sound { animation: zf-sound 2.2s .95s ease-in-out forwards; }
+.talk .zsvg .eyes { animation: zf-blink 2.2s .95s ease-in-out; transform-box: fill-box; transform-origin: center; }
+@keyframes zf-pull { to { transform: translateX(-17px); } }
+@keyframes zf-unzip { to { stroke-dashoffset: 16; } }
+@keyframes zf-fade { to { opacity: 0; } }
+@keyframes zf-open { to { transform: scaleX(1); } }
+@keyframes zf-talk {
+  0% { transform: scaleY(.45); } 10% { transform: scaleY(1.15); } 20% { transform: scaleY(.4); }
+  32% { transform: scaleY(1); } 42% { transform: scaleY(.55); } 54% { transform: scaleY(1.2); }
+  64% { transform: scaleY(.35); } 76% { transform: scaleY(.95); } 88% { transform: scaleY(.5); } 100% { transform: scaleY(.75); }
+}
+@keyframes zf-sound { 0% { opacity: 0; } 12% { opacity: 1; } 30% { opacity: .3; } 45% { opacity: 1; } 65% { opacity: .35; } 80% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes zf-blink { 0%, 60%, 70%, 100% { transform: scaleY(1); } 65% { transform: scaleY(.15); } }
+.say {
+  position: absolute; left: 62%; bottom: 92%;
+  font-family: var(--f-tape); font-weight: 600; font-size: .16em; line-height: 1; letter-spacing: 0;
+  text-transform: none; white-space: nowrap;
+  -webkit-text-fill-color: var(--surface-ink); color: var(--surface-ink);
+  background: var(--surface); border: 2px solid var(--surface-ink); border-radius: var(--wobble);
+  padding: .32em .6em .38em;
+  opacity: 0; transform: scale(.4) rotate(-6deg); transform-origin: 0 100%;
+  pointer-events: none;
+}
+.say::after {
+  content: ""; position: absolute; left: 14%; top: 100%; width: .7em; height: .7em;
+  background: var(--surface); border-right: 2px solid var(--surface-ink); border-bottom: 2px solid var(--surface-ink);
+  transform: translateY(-50%) rotate(45deg) skew(10deg, 10deg);
+}
+.talk .say { animation: zf-say 3.4s .95s cubic-bezier(.3, 1.4, .5, 1) forwards; }
+@keyframes zf-say { 0% { opacity: 0; transform: scale(.4) rotate(-6deg); } 12% { opacity: 1; transform: scale(1) rotate(-4deg); } 82% { opacity: 1; transform: scale(1) rotate(-4deg); } 100% { opacity: 0; transform: scale(.9) rotate(-4deg); } }
+/* after talking it zips back up, so the resting logo is always the closed zipper */
+.zipup .zsvg .mouth { animation: zf-close .7s cubic-bezier(.5, 0, .3, 1) forwards; }
+.zipup .zsvg .pull { animation: zf-pull-back .7s cubic-bezier(.5, 0, .3, 1) forwards; }
+.zipup .zsvg .zline { animation: zf-zip .7s cubic-bezier(.5, 0, .3, 1) forwards; }
+.zipup .zsvg .teeth path { opacity: 0; animation: zf-show .14s ease forwards; }
+.zipup .zsvg .teeth path:nth-child(5) { animation-delay: .1s; }
+.zipup .zsvg .teeth path:nth-child(4) { animation-delay: .22s; }
+.zipup .zsvg .teeth path:nth-child(3) { animation-delay: .34s; }
+.zipup .zsvg .teeth path:nth-child(2) { animation-delay: .46s; }
+.zipup .zsvg .teeth path:nth-child(1) { animation-delay: .58s; }
+@keyframes zf-close { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@keyframes zf-pull-back { from { transform: translateX(-17px); } to { transform: translateX(0); } }
+@keyframes zf-zip { from { stroke-dashoffset: 16; } to { stroke-dashoffset: 0; } }
+@keyframes zf-show { to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .talk .zsvg *, .talk .say, .zipup .zsvg * { animation: none !important; } }
+
+/* ---------- header ---------- */
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+}
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 64px; }
+.logo { font-size: 25px; text-decoration: none; line-height: 1; white-space: nowrap; }
+.zip-o { display: inline-block; width: .86em; height: .86em; margin: 0 .01em 0 .03em; vertical-align: -.1em; color: var(--ink); }
+.zip-o svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.top-right { display: flex; align-items: center; gap: 14px; }
+.socials { display: flex; gap: 6px; }
+.icon-link { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: var(--ink); transition: transform .15s ease; }
+.icon-link:hover { transform: rotate(-6deg) scale(1.06); }
+.icon-link svg { width: 34px; height: 34px; }
+@media (max-width: 479px) { .top .socials { display: none; } }
+
+/* ---------- sections ---------- */
+main { overflow-x: clip; } /* tape strips and tilted sheets may poke past the screen edge */
+section { padding-block: clamp(56px, 9vw, 112px); }
+
+/* flyer heads: small lead words + one giant key word, fitted to the column by JS (.fit) */
+.fly-head { font-size: clamp(30px, 4.2vw, 54px); line-height: .98; text-wrap: initial; min-width: 0; width: 100%; }
+.fly-head .s { display: block; width: max-content; max-width: 100%; }
+.fly-head .b { display: block; width: max-content; white-space: nowrap; font-size: 2.6em; line-height: .92; margin: .02em 0 .04em; }
+.fly-head .pre { font-size: .5em; margin-right: .16em; }
+
+/* white sheet taped to the page; the pencil sketch is printed on it in burgundy */
+.sheet { --bg: var(--white); position: relative; isolation: isolate; padding: clamp(10px, 1.4vw, 16px); transform: rotate(-1.2deg); box-shadow: 0 10px 28px var(--shadow-c); }
+.sheet img { width: 100%; height: auto; filter: url(#duo-print); mix-blend-mode: multiply; }
+.sheet::before, .sheet::after { content: ""; position: absolute; z-index: 1; width: 84px; height: 26px; top: -11px; background: url(img/tape-white.webp) center / 100% 100% no-repeat; filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, .25)); }
+.sheet::before { left: -20px; transform: rotate(-36deg); }
+.sheet::after { right: -20px; transform: rotate(34deg); }
+
+/* hero */
+.hero { padding-top: clamp(28px, 5vw, 72px); }
+.hero-grid { display: grid; gap: clamp(34px, 4vw, 56px); align-items: center; }
+.hero-copy { display: grid; gap: 24px; min-width: 0; }
+.hero .fly-head { font-size: clamp(30px, 6.6vw, 86px); }   /* no picture beside it: the headline spans the whole width */
+.hero-meta { font-family: var(--f-label); font-size: 14px; color: var(--soft); display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.hero-meta b { color: var(--ink); font-weight: 600; }
+
+/* events: Rule 257 style cards */
+.cards { display: grid; gap: 34px 26px; padding-top: 22px; }
+@media (min-width: 760px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.card { position: relative; display: flex; flex-direction: column; min-width: 0; border: 2px solid var(--ink); border-radius: var(--wobble); background: var(--bg); }
+.card:nth-child(2) { border-radius: var(--wobble-2); }
+.card-photo {
+  position: relative; aspect-ratio: 4 / 3; max-width: 100%;
+  border-bottom: 2px solid var(--ink);
+  border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(-58deg, var(--hatch) 0 1.5px, transparent 1.5px 9px),
+    var(--bg);
+  display: grid; place-items: center;
+}
+.card-photo img { width: 100%; height: 100%; object-fit: cover; }
+.chips { position: absolute; top: 14px; left: 14px; right: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+.card-body { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 22px 22px 24px; border-radius: inherit; border-top-left-radius: 0; border-top-right-radius: 0; }
+.card-body h3 { font-size: clamp(24px, 2.4vw, 30px); }
+.meta { font-family: var(--f-label); font-size: 14px; font-weight: 600; display: flex; flex-wrap: wrap; gap: 4px 16px; font-variant-numeric: tabular-nums; }
+.desc { font-size: 16.5px; line-height: 1.55; }
+.desc ul { margin: 8px 0 0; padding: 0 0 0 1.1em; }
+.desc li { margin: 3px 0; }
+.card .actions { margin-top: auto; padding-top: 8px; }
+.more-bar {
+  display: flex; justify-content: center; align-items: center; gap: 12px;
+  margin-top: 34px; padding: 14px 18px;
+  background: var(--ink); color: var(--bg); border: 2px solid var(--ink); border-radius: var(--wobble-2);
+  font-family: var(--f-label); font-weight: 600; font-size: 14px; 
+  text-decoration: none; text-align: center;
+  box-shadow: 4px 4px 0 var(--white);
+}
+.more-bar:hover { background: color-mix(in srgb, var(--ink) 84%, var(--bg)); border-color: color-mix(in srgb, var(--ink) 84%, var(--bg)); }
+
+/* gallery: one flyer per situation in a sideways row (swipe, drag or the arrows) */
+.gallery {
+  display: flex; gap: 26px;
+  overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+  padding: 24px var(--gutter-r) 26px var(--gutter);
+  margin: 0 calc(-1 * (max(0px, (100vw / var(--z, 1) - 1200px) / 2) + var(--gutter-r))) 0 calc(-1 * var(--gutter));
+  scrollbar-width: none; scroll-padding-left: var(--gutter);
+}
+.gallery::-webkit-scrollbar { display: none; }
+.fly { position: relative; margin: 0; flex: 0 0 min(84%, 440px); scroll-snap-align: start; display: grid; grid-template-rows: 1fr auto; gap: 22px; align-items: end; min-width: 0; }
+.fly .fly-head { font-size: clamp(26px, 3vw, 36px); }
+.fly:nth-child(2n) .sheet { transform: rotate(1.3deg); }
+.fly:nth-child(3n) .sheet { transform: rotate(-.6deg); }
+.swipe { font-family: var(--f-label); font-size: 15px; color: var(--soft); margin-top: 6px; display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.gal-btn { -webkit-appearance: none; appearance: none; width: 50px; height: 50px; border-radius: var(--wobble); border: 2px solid var(--ink); background: transparent; color: var(--ink); font-size: 26px; line-height: 1; cursor: pointer; display: none; }
+.gal-btn:hover { background: var(--ink); color: var(--bg); }
+.gallery.dragging { cursor: grabbing; scroll-snap-type: none; }
+.gallery.dragging * { user-select: none; pointer-events: none; }
+.after-gallery { margin-top: 30px; font-size: clamp(19px, 2.2vw, 23px); max-width: 32em; }
+@media (min-width: 760px) {
+  .gallery { gap: 44px; cursor: grab; }
+  .fly { flex-basis: clamp(300px, 36%, 420px); }
+  .gal-btn { display: inline-block; }
+}
+
+/* who */
+.ticks { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px 40px; }
+.ticks li { display: grid; grid-template-columns: 34px 1fr; gap: 12px; align-items: start; font-size: clamp(18px, 2vw, 21px); }
+.ticks svg { width: 30px; height: 30px; color: var(--accent); margin-top: 2px; }
+@media (min-width: 760px) { .ticks { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.who-lead { margin: 0 0 26px; }
+
+/* course */
+.finals { display: grid; gap: 26px; }
+.block { position: relative; border: 2px solid var(--ink); border-radius: var(--wobble); padding: clamp(22px, 3vw, 32px); display: grid; gap: 10px; align-content: start; min-width: 0; }
+.block:nth-child(2n) { border-radius: var(--wobble-2); }
+.block .tag { font-family: var(--f-label); font-size: 12px;  font-weight: 600; }
+.block p { font-size: 17px; }
+@media (min-width: 820px) { .finals { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.course .lead { margin-bottom: 30px; }
+.course .actions { margin-top: 34px; }
+
+/* host */
+.host { display: grid; gap: 44px; align-items: center; }
+.polaroid { position: relative; width: min(300px, 78vw); max-width: 100%; justify-self: center; margin: 24px 0 0; background: var(--bg); border: 2px solid var(--ink); padding: 14px 14px 46px; transform: rotate(-2.4deg); box-shadow: 0 6px 18px var(--shadow-c); }
+.polaroid .card-photo { aspect-ratio: 1; border: 2px solid var(--ink); border-radius: 0; }
+.polaroid figcaption { position: absolute; left: 0; right: 0; bottom: 12px; text-align: center; font-family: var(--f-label); font-size: 13px; color: var(--soft); }
+.note { position: relative; background: var(--bg); border: 2px solid var(--ink); border-radius: var(--wobble-2); padding: clamp(26px, 4vw, 44px); display: grid; gap: 16px; min-width: 0; }
+.note h3 { font-size: clamp(32px, 4.4vw, 54px); }
+.where { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 17px; font-weight: 600; margin-top: -4px; }
+.where a { color: inherit; text-underline-offset: 3px; }
+details a { color: var(--ink); text-underline-offset: 3px; }
+/* the polaroid and the bio note are taped to the page like the sketches and the photo strip */
+.polaroid::before, .note::before { content: ""; position: absolute; z-index: 3; top: -13px; width: 86px; height: 26px; background: url(img/tape-white.webp) center / 100% 100% no-repeat; filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, .25)); }
+.polaroid::before { left: 50%; margin-left: -43px; transform: rotate(3deg); }
+.note::before { right: 34px; transform: rotate(-5deg); }
+/* Katya's photos: no drag, no "save image" on right click or long press (screenshots still work) */
+.shot img, .polaroid img { pointer-events: none; -webkit-user-drag: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.shot, .polaroid { -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
+/* Katya at work: small taped photos, scroll sideways on phones */
+.work { display: flex; justify-content: space-between; gap: clamp(14px, 2.2vw, 28px); margin-top: clamp(30px, 5vw, 56px); padding: 20px 6px 24px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.work::-webkit-scrollbar { display: none; }
+.shot { position: relative; flex: 0 0 clamp(150px, 15.5vw, 196px); margin: 0; padding: 9px 9px 26px; background: #fff; box-shadow: 0 6px 16px var(--shadow-c); scroll-snap-align: start; transform: rotate(var(--r, -1.6deg)); }
+.shot:nth-child(2n) { --r: 1.9deg; }
+.shot:nth-child(3n) { --r: -.7deg; }
+.shot img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+.shot::before { content: ""; position: absolute; z-index: 1; top: -12px; left: 50%; width: 72px; height: 22px; margin-left: -36px; background: url(img/tape-white.webp) center / 100% 100% no-repeat; transform: rotate(-4deg); filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, .25)); }
+.note .tapes { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; margin-top: 6px; }
+@media (min-width: 860px) { .host { grid-template-columns: 340px 1fr; gap: 56px; } }
+
+/* rules: label-maker stickers */
+.rules-board { display: grid; gap: 44px; }
+.stickers { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+.stickers .row { display: flex; flex-wrap: wrap; gap: 6px; }
+.stickers .row:nth-child(1) { transform: rotate(-1.2deg); }
+.stickers .row:nth-child(2) { transform: rotate(.8deg); margin-left: clamp(0px, 6vw, 70px); }
+.stickers .row:nth-child(3) { transform: rotate(-.6deg); margin-left: clamp(0px, 2vw, 24px); }
+.stickers .row:nth-child(4) { transform: rotate(1deg); margin-left: clamp(0px, 9vw, 110px); }
+.rules-note { color: var(--soft); max-width: 30em; margin-top: 26px; }
+details { border-bottom: 1.5px solid var(--line); padding: 16px 0; }
+details:first-of-type { border-top: 1.5px solid var(--line); }
+summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 16px; font-weight: 600; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font-family: var(--f-label); font-size: 22px; line-height: 1; color: var(--accent); transition: transform .2s ease; }
+details[open] summary::after { transform: rotate(45deg); }
+details p { margin-top: 10px; color: var(--soft); }
+@media (min-width: 900px) { .rules-board { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 72px; align-items: start; } }
+
+/* footer */
+footer { padding-block: clamp(56px, 8vw, 96px) calc(28px + env(safe-area-inset-bottom, 0px)); }
+.foot-panel { border-radius: var(--wobble); padding: clamp(24px, 4vw, 44px); display: grid; grid-template-columns: minmax(0, 1fr); gap: 34px; overflow: hidden; container-type: inline-size; }
+.foot-cols { display: grid; gap: 28px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+.foot-cols .tape { margin-bottom: 14px; }
+.foot-cols ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; font-family: var(--f-label); font-size: 15px; }
+.foot-cols a { text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
+.foot-cols a[href]:hover { text-decoration: underline; text-underline-offset: 4px; }
+.foot-cols svg { width: 30px; height: 30px; flex: none; }
+.wordmark { font-size: 16cqi; line-height: .9; white-space: nowrap; display: inline-block; justify-self: end; }
+.fine { font-family: var(--f-label); font-size: 12.5px; color: var(--soft); }
+
+/* ---------- survey dialog ---------- */
+dialog.survey {
+  border: 2px solid var(--ink);
+  border-radius: var(--wobble);
+  padding: 0;
+  width: min(600px, calc(100vw - 24px));
+  max-height: min(88vh, 860px);
+  color: var(--ink);
+  box-shadow: 8px 8px 0 var(--blue);
+  overflow: hidden;
+}
+/* the page fades into its own burgundy; literal because ::backdrop does not inherit custom properties everywhere */
+dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
+.survey-scroll { overflow-y: auto; max-height: min(88vh, 860px); padding: 28px clamp(20px, 4vw, 36px) 28px; }
+.survey-x { position: absolute; top: 10px; right: 10px; width: 44px; height: 44px; border: 0; background: none; cursor: pointer; color: var(--ink); display: grid; place-items: center; border-radius: 50%; }
+.survey-x svg { width: 26px; height: 26px; }
+.survey h2 { font-size: clamp(28px, 6vw, 40px); padding-right: 40px; }
+.survey .sub { color: var(--soft); margin: 12px 0 22px; font-size: 16px; }
+.survey form { display: grid; gap: 22px; }
+.survey fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.survey legend { font-weight: 600; margin-bottom: 10px; padding: 0; }
+.opts { display: flex; flex-wrap: wrap; gap: 10px; }
+.opt { position: relative; }
+.opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.opt span { display: inline-block; padding: 9px 15px; cursor: pointer; border: 2px solid var(--ink); border-radius: var(--wobble); font-size: 16px; background: var(--field); user-select: none; transition: background .12s ease, color .12s ease; }
+.opt:nth-child(2n) span { border-radius: var(--wobble-2); }
+.opt input:checked + span { background: var(--ink); color: var(--bg); }
+.opt input:focus-visible + span { outline: 2.5px solid var(--accent); outline-offset: 3px; }
+.field { display: grid; gap: 8px; }
+.field label { font-weight: 600; }
+.field input { font: inherit; font-size: 17px; padding: 13px 15px; color: var(--ink); border: 2px solid var(--ink); border-radius: var(--wobble-2); background: var(--field); width: 100%; }
+.survey .actions { margin-top: 4px; }
+.linkish { background: none; border: 0; padding: 8px 4px; font-family: var(--f-label); font-size: 14px; color: var(--soft); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+.thanks { display: grid; gap: 16px; justify-items: start; }
+.trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+@media (max-width: 599px) {
+  dialog.survey { width: 100vw; max-width: 100vw; margin: auto 0 0; border-radius: 22px 22px 0 0; border-bottom: 0; box-shadow: none; max-height: 92vh; }
+  .survey-scroll { max-height: 92vh; padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* ---------- intro ---------- */
+.intro {
+  position: fixed; inset: 0; z-index: 100;
+  display: grid; place-items: center;
+  padding: calc(64px + env(safe-area-inset-top, 0px)) var(--gutter-r) calc(40px + env(safe-area-inset-bottom, 0px)) var(--gutter);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.intro.out { opacity: 0; transform: translateY(-3%); pointer-events: none; }
+.intro-stage { width: min(100%, 980px, calc((100vh - 200px) * 1.506)); display: grid; gap: 18px; justify-items: center; }
+.intro-stage svg { width: 100%; height: auto; display: block; }
+.intro-cap { font-size: clamp(26px, 4vw, 40px); min-height: 1.1em; text-align: center; transition: opacity .3s ease; }
+.intro-skip { position: absolute; top: calc(14px + env(safe-area-inset-top, 0px)); right: calc(14px + env(safe-area-inset-right, 0px)); }
+.intro-logo { position: absolute; top: calc(22px + env(safe-area-inset-top, 0px)); left: calc(18px + env(safe-area-inset-left, 0px)); font-size: 22px; }
+.intro .before { transition: opacity .5s ease, transform .9s cubic-bezier(.2, .7, .2, 1); }
+.intro.start .before { opacity: 0; transform: scale(.97); transform-origin: center; }
+@media (max-aspect-ratio: 1/1) { .intro-stage { gap: 28px; } .intro-cap { font-size: 40px; } }
+@media (prefers-reduced-motion: reduce) { .intro { display: none; } }
+
+.intro-stage > svg { filter: url(#duo-print); background: #fff; transform: rotate(-1deg); box-shadow: 0 12px 30px var(--shadow-c); } /* drawings printed on a white sheet, like the flyers */
+
+/* ---------- tones: blocks that change colour ----------
+   A tone redefines --bg/--ink and the sticker tokens; the derived tokens at the top follow it,
+   so lettering (and its paper specks), buttons, hairlines, ticks and the zip face adapt.
+   white  .tone-white, cards, polaroid, note, speech bubble, survey, sheets: burgundy on white
+   solid  .tone-solid: burgundy on blue (inverted page)
+   tint   .tone-tint: blue on a lighter burgundy
+   Letters keep the paper texture only on burgundy; elsewhere they are flat ink (--hw). */
+.tone-white, .card, .polaroid, .note, .say, dialog.survey {
+  --bg: var(--white); --ink: var(--burg);
+  --tape-bg: var(--burg); --tape-ink: var(--white);
+  --hl: var(--blue); --hl-ink: var(--burg);
+  --btn-sh: var(--blue);
+  --hw: currentColor;
+  color: var(--ink);
+}
+.tone-solid {
+  --bg: var(--blue); --ink: var(--burg);
+  --tape-bg: var(--white); --tape-ink: var(--burg);
+  --hl: var(--white); --hl-ink: var(--burg);
+  --btn-sh: var(--white);
+  --hw: currentColor;
+  color: var(--ink);
+}
+.tone-tint {
+  --bg: color-mix(in srgb, var(--blue) 12%, var(--burg)); --ink: var(--blue);
+  --tape-bg: var(--white); --tape-ink: var(--burg);
+  --hl: var(--white); --hl-ink: var(--burg);
+  --btn-sh: var(--white);
+  color: var(--ink);
+}
+.tone-white, .tone-solid, .tone-tint { background: var(--bg); }
+/* highlighter behind «подаче.»: a white swipe, the word stays burgundy */
+.mark { --bg: var(--mark-fill); --ink: var(--burg); --hw: currentColor; color: var(--ink); }
+/* first screen, like rule257: lesson footage over the whole viewport under the header bar,
+   lightly shaded at the edges, colour-graded like film (baked into the files) with a fine grain on top; the 16:9 cut on landscape screens,
+   the vertical cut on portrait ones */
+.stage { position: relative; isolation: isolate; overflow: hidden; height: calc(100svh - 64px * var(--z, 1)); min-height: 460px; padding: 0; display: grid; align-items: center; background: #111; }
+.stage-media { position: absolute; inset: 0; z-index: -1; pointer-events: none; will-change: transform; }
+.stage-media video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.stage-media .v-tall { display: none; }
+@media (orientation: portrait) { .stage-media .v-wide { display: none; } .stage-media .v-tall { display: block; } }
+.stage-media::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgba(0,0,0,.18) 45%, rgba(0,0,0,.5) 100%); }
+/* film grain like rule257's footage: a fine noise tile redrawn at a new offset ~12 times a second */
+.stage-grain { position: absolute; inset: -100px; z-index: -1; pointer-events: none; opacity: .5; mix-blend-mode: overlay;
+  background-size: 160px 160px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.6' numOctaves='1' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain .66s steps(8) infinite; }
+@keyframes grain { 0% { transform: translate(0,0); } 12.5% { transform: translate(-37px,21px); } 25% { transform: translate(52px,-14px); } 37.5% { transform: translate(-18px,-61px); } 50% { transform: translate(64px,43px); } 62.5% { transform: translate(-71px,9px); } 75% { transform: translate(23px,68px); } 87.5% { transform: translate(-49px,-33px); } 100% { transform: translate(0,0); } }
+@media (prefers-reduced-motion: reduce) { .stage-grain { animation: none; } }
+.stage + section { border-top: 0; }
+</style>
+</head>
+<body>
+
+<!-- Intro: "before" gets scribbled into "after" -->
+<div class="intro start" id="intro" aria-hidden="true">
+  <div class="intro-logo hand">freeflow<span class="accent">.</span>nyc</div>
+  <button class="btn ghost sm intro-skip" id="intro-skip" type="button">Пропустить</button>
+  <div class="intro-stage">
+    <svg viewBox="0 0 1280 850" role="img" aria-label="До и после: одна листает чужие успехи, потом её слушает вся компания">
+      <defs>
+        <mask id="reveal" maskUnits="userSpaceOnUse" x="0" y="0" width="1280" height="850">
+          <rect width="1280" height="850" fill="#000"/>
+          <path id="scribble" fill="none" stroke="#fff" stroke-width="250" stroke-linecap="round" stroke-linejoin="round"
+                d="M -120 -40 L 260 -120 L -160 330 L 560 -100 L -140 700 L 900 -110 L 40 980 L 1300 -90 L 420 990 L 1420 160 L 820 1000 L 1420 560 L 1180 1000"/>
+        </mask>
+      </defs>
+      <g class="before"><image href="img/intro-before.webp" width="1280" height="850"/></g>
+      <g mask="url(#reveal)"><image href="img/intro-after.webp" width="1280" height="850"/></g>
+    </svg>
+    <div class="intro-cap hand" id="intro-cap">до</div>
+  </div>
+</div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo hand" href="#top" aria-label="freeflow.nyc"><span aria-hidden="true">freefl</span><span class="zip-o" aria-hidden="true"><svg viewBox="0 0 40 40"><use href="#i-zipo"/></svg></span><span aria-hidden="true">w<span class="accent">.</span>nyc</span></a>
+    <div class="top-right">
+      <div class="socials">
+        <a class="icon-link js-ig" href="https://instagram.com/freeflow.nyc" aria-label="Instagram freeflow.nyc"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#i-ig"/></svg></a>
+        <a class="icon-link js-tg" href="https://t.me/freeflownyc" aria-label="Telegram freeflownyc"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#i-tg"/></svg></a>
+      </div>
+      <a class="btn sm js-register" href="#events">Записаться</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="stage" aria-label="Видео с наших занятий">
+    <div class="stage-media" aria-hidden="true">
+      <video class="v-wide" poster="video/lessons-wide.jpg" muted loop playsinline preload="none"><source data-src="video/lessons-wide.mp4" type="video/mp4"><source data-src="video/lessons-wide.webm" type="video/webm"></video>
+      <video class="v-tall" poster="video/lessons-2.jpg" muted loop playsinline preload="none"><source data-src="video/lessons-2.mp4" type="video/mp4"><source data-src="video/lessons-2.webm" type="video/webm"></video>
+    </div>
+    <div class="stage-grain" aria-hidden="true"></div>
+  </section>
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <h1 class="hand fly-head"><span class="s">Дело не в тебе.</span> <span class="s">Дело в</span> <span class="b fit">подаче.</span></h1>
+        <p class="lead">Речь и уверенность — это навык, и его можно натренировать. Два часа с актрисой Катей Черепановой: голос, самопрезентация и упражнения, после которых тебя слушают.</p>
+        <div class="hero-meta"><span><b>Сб, 24 октября</b> · 15:45–18:00</span><span>Rule 25/7, Manhattan</span><span><b>$45</b> + американо</span></div>
+        <div class="actions">
+          <a class="btn js-register" href="#events">Записаться</a>
+          <button class="btn ghost js-open-survey" type="button">Пара вопросов о тебе</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="events">
+    <div class="wrap">
+      <h2 class="hand giant">События</h2>
+      <div class="cards">
+        <article class="card">
+          <div class="card-photo">
+            <div class="chips"><span class="tape sm">Мастер-класс</span><span class="tape sm">2 часа</span><span class="tape sm">На русском</span></div>
+            <img src="img/class-1.webp" alt="Катя работает с ученицей на занятии" loading="lazy">
+          </div>
+          <div class="card-body tone-white">
+            <h3 class="hand">Голос и речь</h3>
+            <p class="meta"><span>Сб, 24 окт · 15:45–18:00</span><span>$45 + американо</span></p>
+            <p class="where"><a href="https://maps.google.com/?q=Rule+25%2F7%2C+54+Eldridge+St%2C+New+York%2C+NY+10002" target="_blank" rel="noopener">Rule 25/7, 54 Eldridge St ↗</a><a href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=%D0%93%D0%BE%D0%BB%D0%BE%D1%81+%D0%B8+%D1%80%D0%B5%D1%87%D1%8C+%C2%B7+freeflow.nyc&amp;dates=20261024T194500Z%2F20261024T220000Z&amp;location=Rule+25%2F7%2C+54+Eldridge+St%2C+New+York%2C+NY+10002&amp;details=%D0%9C%D0%B0%D1%81%D1%82%D0%B5%D1%80-%D0%BA%D0%BB%D0%B0%D1%81%D1%81+%D1%81+%D0%9A%D0%B0%D1%82%D0%B5%D0%B9+%D0%A7%D0%B5%D1%80%D0%B5%D0%BF%D0%B0%D0%BD%D0%BE%D0%B2%D0%BE%D0%B9.+https%3A%2F%2Ffreeflow.nyc" target="_blank" rel="noopener" class="js-cal">+ в календарь</a></p>
+            <div class="desc">
+              <p>Два часа с актрисой Катей Черепановой. Без опыта и без оценок.</p>
+              <ul>
+                <li>посмотришь на себя со стороны</li>
+                <li>поработаешь над самопрезентацией</li>
+                <li>упражнения для голоса и харизмы</li>
+              </ul>
+            </div>
+            <div class="actions">
+              <a class="btn sm js-register" href="#events">Записаться →</a>
+              <a class="btn sm light" href="#faq">Подробнее</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-photo">
+            <div class="chips"><span class="tape sm">2–3 месяца</span><span class="tape sm">Группа до 15</span></div>
+            <img src="img/class-group.webp" alt="Группа после занятия" loading="lazy">
+          </div>
+          <div class="card-body tone-solid">
+            <h3 class="hand">Курс · поток 1</h3>
+            <p class="meta"><span>Старт после мастер-класса</span><span>Цена скоро</span></p>
+            <p class="desc">Занятия раз в неделю, потом каникулы. В финале: вечер историй, видеовизитка или первый Reels.</p>
+            <div class="actions">
+              <button class="btn sm js-open-survey" type="button">В лист ожидания →</button>
+            </div>
+          </div>
+        </article>
+      </div>
+      <a class="more-bar js-ig" href="https://instagram.com/freeflow.nyc">Новые даты — в Instagram <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2 class="hand giant right">Знакомо?</h2>
+      <div class="gallery" tabindex="0" aria-label="Рисунки: знакомые ситуации">
+        <figure class="fly"><h3 class="hand fly-head"><span class="s">Что это за</span> <span class="b fit">писк?</span></h3><div class="sheet"><img src="img/sk-01.webp" width="1280" height="657" loading="lazy" alt="Человечек с застёгнутым на молнию ртом, остальные хмурятся."></div></figure>
+        <figure class="fly"><h3 class="hand fly-head"><span class="s">Она не занята. Ей просто</span> <span class="b fit">скучно.</span></h3><div class="sheet"><img src="img/sk-02.webp" width="1280" height="765" loading="lazy" alt="Свидание: он сбивчиво рассказывает, она листает телефон."></div></figure>
+        <figure class="fly"><h3 class="hand fly-head"><span class="b fit">говори</span> <span class="s">уже.</span></h3><div class="sheet"><img src="img/sk-03.webp" width="1280" height="815" loading="lazy" alt="Она стоит перед камерой на штативе и молчит, вокруг смятые листы."></div></figure>
+        <figure class="fly"><h3 class="hand fly-head"><span class="s">Чё ты</span> <span class="b fit">мычишь?</span></h3><div class="sheet"><img src="img/sk-04.webp" width="1280" height="850" loading="lazy" alt="Вечеринка: все смеются, она молча держит стакан."></div></figure>
+        <figure class="fly"><h3 class="hand fly-head"><span class="b fit"><small class="pre">Не</small> перебивай</span> <span class="s">себя.</span></h3><div class="sheet"><img src="img/sk-05.webp" width="1280" height="729" loading="lazy" alt="Совещание: «я думаю, что… хотя, может, и нет… забейте»."></div></figure>
+        <figure class="fly"><h3 class="hand fly-head"><span class="b fit"><small class="pre">А</small> ты тоже</span> <span class="s">там была?</span></h3><div class="sheet"><img src="img/sk-06.webp" width="945" height="687" loading="lazy" alt="Подруги смотрят фото с вечеринки, где её лицо зачёркнуто."></div></figure>
+        <figure class="fly"><h3 class="hand fly-head"><span class="s">Проси</span> <span class="b fit">больше.</span></h3><div class="sheet"><img src="img/sk-07.webp" width="771" height="626" loading="lazy" alt="Созвон: думает «$500», а вслух говорит «…$50?»."></div></figure>
+        <figure class="fly"><h3 class="hand fly-head"><span class="s">Все растут. Ты</span> <span class="b fit">листаешь.</span></h3><div class="sheet"><img src="img/sk-09.webp" width="1161" height="728" loading="lazy" alt="Она лежит в кровати и листает чужие успехи."></div></figure>
+        <figure class="fly"><h3 class="hand fly-head"><span class="s">Тебя</span> <span class="b fit">запомнят.</span></h3><div class="sheet"><img src="img/sk-10.webp" width="1082" height="672" loading="lazy" alt="Она рассказывает историю, все вокруг слушают и улыбаются."></div></figure>
+      </div>
+      <p class="swipe"><span>листай</span><button class="gal-btn" type="button" data-dir="-1" aria-label="Назад">←</button><button class="gal-btn" type="button" data-dir="1" aria-label="Дальше">→</button></p>
+      <p class="after-gallery">У каждого был такой момент. Это не характер, а навык: голос, паузы и подачу тренируют так же, как английский или спорт.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2 class="hand giant">Для кого</h2>
+      <p class="lead who-lead">Опыт не нужен. Для тех, кто хочет:</p>
+      <ul class="ticks">
+        <li><svg viewBox="0 0 30 30" aria-hidden="true"><use href="#i-tick"/></svg>быть актёром или попробовать себя в кадре</li>
+        <li><svg viewBox="0 0 30 30" aria-hidden="true"><use href="#i-tick"/></svg>снимать контент и не бояться камеры</li>
+        <li><svg viewBox="0 0 30 30" aria-hidden="true"><use href="#i-tick"/></svg>чувствовать себя увереннее</li>
+        <li><svg viewBox="0 0 30 30" aria-hidden="true"><use href="#i-tick"/></svg>освоить ораторское искусство</li>
+        <li><svg viewBox="0 0 30 30" aria-hidden="true"><use href="#i-tick"/></svg>уверенно рассказывать о себе</li>
+        <li><svg viewBox="0 0 30 30" aria-hidden="true"><use href="#i-tick"/></svg>не теряться, когда перебивают</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="course">
+    <div class="wrap">
+      <h2 class="hand giant right">Курс</h2>
+      <p class="lead">Потоки по 2–3 месяца, потом каникулы. У каждого потока свой финал, с которым ты уходишь.</p>
+      <div class="finals">
+        <div class="block tone-tint"><span class="tag">Финал</span><h3 class="hand">Вечер историй</h3><p>Каждый рассказывает свою историю гостям в кофейне.</p></div>
+        <div class="block tone-white"><span class="tag">Финал</span><h3 class="hand">Видеовизитка</h3><p>Профессиональная съёмка: уходишь с готовым видео о себе.</p></div>
+        <div class="block tone-solid"><span class="tag">Финал</span><h3 class="hand">Первый Reels</h3><p>Ролик для блога, который не стыдно выложить.</p></div>
+      </div>
+      <div class="actions">
+        <button class="btn ghost js-open-survey" type="button">Хочу в лист ожидания</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2 class="hand giant">Кто ведёт</h2>
+      <div class="host">
+        <figure class="polaroid">
+          <div class="card-photo"><img src="img/katya.webp" alt="Катя Черепанова"></div>
+          <figcaption>Катя, актриса</figcaption>
+        </figure>
+        <div class="note">
+          <h3 class="hand">Катя Черепанова</h3>
+          <p>Актриса театра и кино. Окончила актёрский факультет РГИСИ в Петербурге, играла в Театре Андрея Миронова и Театре на Моховой. Больше 20 ролей в кино и сериалах, среди них «Купчино», «Свои», «Улицы разбитых фонарей» и «Морские дьяволы». Снималась в рекламе Тинькофф и S7.</p>
+          <p>Преподаёт актёрское мастерство и голос: индивидуальные уроки, киношкола «ЛиК», детские студии. Короткометражка «Волшебная скамейка», которую она сняла с учениками, взяла 1-е место на Всероссийском кинофестивале «Зелёный режиссёр».</p>
+          <p>На занятиях — актёрские и речевые упражнения без оценок и без сцены, если ты к ней не готов(а).</p>
+          <div class="tapes"><span class="tape">Без опыта.</span><span class="tape">Без оценок.</span><span class="tape">С кофе.</span></div>
+        </div>
+      </div>
+      <div class="work" role="list" aria-label="Катя в работе">
+        <figure class="shot" role="listitem"><img src="img/work-set.webp" alt="Катя на съёмочной площадке" loading="lazy"></figure>
+        <figure class="shot" role="listitem"><img src="img/work-monitor.webp" alt="Катя в кадре на мониторе камеры" loading="lazy"></figure>
+        <figure class="shot" role="listitem"><img src="img/work-stage.webp" alt="Катя в спектакле, со скрипкой" loading="lazy"></figure>
+        <figure class="shot" role="listitem"><img src="img/work-studio.webp" alt="Катя на съёмке в студии" loading="lazy"></figure>
+        <figure class="shot" role="listitem"><img src="img/work-film.webp" alt="Кадр из фильма с Катей" loading="lazy"></figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="wrap">
+      <h2 class="hand giant right">Как у нас</h2>
+      <div class="rules-board">
+        <div>
+          <div class="stickers" role="list" aria-label="Правила">
+            <div class="row" role="listitem"><span class="tape">Правило 1:</span><span class="tape">без</span><span class="tape">телефонов.</span></div>
+            <div class="row" role="listitem"><span class="tape">Правило 2:</span><span class="tape">всё</span><span class="tape">в чёрном.</span></div>
+            <div class="row" role="listitem"><span class="tape">Правило 3:</span><span class="tape">без</span><span class="tape">оценок.</span></div>
+            <div class="row" role="listitem"><span class="tape">Правило 4:</span><span class="tape">что сказано здесь,</span><span class="tape">остаётся здесь.</span></div>
+          </div>
+          <p class="rules-note">Одежда чёрная и удобная, не свободная: так видно дыхание и осанку. Снимаем только с разрешения.</p>
+        </div>
+        <div>
+          <p class="label">Вопросы</p>
+          <details><summary>Я не актёр. Мне можно?</summary><p>Да, опыт не нужен. Подойдёт и тем, кто хочет в актёры, и тем, кому просто нужно увереннее говорить.</p></details>
+          <details><summary>Что входит в $45?</summary><p>Два часа занятия и американо от Rule 25/7.</p></details>
+          <details><summary>Как оплатить?</summary><p>Картой, наличными или через Zelle.</p></details>
+          <details><summary>На каком языке?</summary><p>На русском.</p></details>
+          <details><summary>Где именно?</summary><p>Rule 25/7, 54 Eldridge St, Manhattan. <a href="https://maps.google.com/?q=Rule+25%2F7%2C+54+Eldridge+St%2C+New+York%2C+NY+10002" target="_blank" rel="noopener">Открыть карту ↗</a></p></details>
+          <details><summary>Когда?</summary><p>Суббота, 24 октября, 15:45–18:00. Приходи минут за десять, чтобы взять кофе.</p></details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-panel">
+      <div class="foot-cols">
+        <div>
+          <span class="tape">Подписывайся</span>
+          <ul>
+            <li><a class="js-ig" href="https://instagram.com/freeflow.nyc"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#i-ig"/></svg>@freeflow.nyc</a></li>
+            <li><a class="js-tg" href="https://t.me/freeflownyc"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#i-tg"/></svg><span>t.me/freeflownyc</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="wordmark hand" role="img" aria-label="freeflow"><span aria-hidden="true">freefl</span><span class="zip-o" aria-hidden="true"><svg viewBox="0 0 40 40"><use href="#i-zipo"/></svg></span><span aria-hidden="true">w</span></div>
+    </div>
+  </div>
+</footer>
+
+<!-- Survey: opens first for visitors from a flyer QR (?src=…), can be closed -->
+<dialog class="survey" id="survey" aria-labelledby="survey-title">
+  <button class="survey-x" type="button" id="survey-close" aria-label="Закрыть"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M5 5 C 10 10, 15 15, 21 21 M21 5 C 16 10, 10 15, 5 21" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+  <div class="survey-scroll">
+    <div id="survey-body">
+      <h2 class="hand" id="survey-title">Пара вопросов о тебе</h2>
+      <p class="sub">30 секунд. Так Катя поймёт, с чем ты придёшь. Можно пропустить.</p>
+      <form id="survey-form">
+        <input type="hidden" name="src" id="f-src">
+        <input class="trap" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <fieldset>
+          <legend>Насколько ты доволен(а) тем, как говоришь?</legend>
+          <div class="opts">
+            <label class="opt"><input type="radio" name="mood" value="great" id="m1"><span>Всё отлично</span></label>
+            <label class="opt"><input type="radio" name="mood" value="ok" id="m2"><span>Есть что улучшить</span></label>
+            <label class="opt"><input type="radio" name="mood" value="lost" id="m3"><span>Часто теряюсь</span></label>
+            <label class="opt"><input type="radio" name="mood" value="pain" id="m4"><span>Больная тема</span></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Что хочешь прокачать?</legend>
+          <div class="opts">
+            <label class="opt"><input type="checkbox" name="goal" value="diction" id="g1"><span>Дикция</span></label>
+            <label class="opt"><input type="checkbox" name="goal" value="voice" id="g2"><span>Голос</span></label>
+            <label class="opt"><input type="checkbox" name="goal" value="confidence" id="g3"><span>Уверенность</span></label>
+            <label class="opt"><input type="checkbox" name="goal" value="self" id="g4"><span>Рассказ о себе</span></label>
+            <label class="opt"><input type="checkbox" name="goal" value="camera" id="g5"><span>Камера и блог</span></label>
+            <label class="opt"><input type="checkbox" name="goal" value="people" id="g6"><span>Знакомства</span></label>
+          </div>
+        </fieldset>
+        <div class="field">
+          <label for="f-name">Как тебя зовут?</label>
+          <input id="f-name" name="name" type="text" autocomplete="given-name" placeholder="Имя">
+        </div>
+        <div class="field">
+          <label for="f-contact">Где тебе написать?</label>
+          <input id="f-contact" name="contact" type="text" autocomplete="off" placeholder="@telegram или @instagram">
+        </div>
+        <div class="actions">
+          <button class="btn" type="submit">Отправить</button>
+          <button class="linkish" type="button" id="survey-skip">Пропустить</button>
+        </div>
+      </form>
+    </div>
+    <div class="thanks" id="survey-thanks" hidden>
+      <h2 class="hand">Спасибо!</h2>
+      <p>Мы напишем тебе. А пока — вот что будет 24 октября.</p>
+      <button class="btn" type="button" id="survey-done">Смотреть мастер-класс</button>
+    </div>
+  </div>
+</dialog>
+
+<!-- Hand-drawn icons and objects -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <!-- blue paper texture for the drawn letters (stroke: url(#ptex)); user units = glyph units -->
+    <pattern id="ptex" patternUnits="userSpaceOnUse" x="-8" y="-400" width="720" height="1280"><image href="img/paper-blue.jpg" x="-2" y="-2" width="724" height="1284" preserveAspectRatio="none"/></pattern>
+  </defs>
+  <defs>
+    <symbol id="i-ig" viewBox="0 0 48 48">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke-width="2.6" d="M15 7.5 C 22 6.8, 28 7, 33.5 7.6 C 38.5 8.4, 40.6 11, 40.8 16 C 41.2 22, 41 28, 40.4 33.4 C 39.8 38.4, 37 40.6, 32 40.7 C 26 41.1, 20.5 41, 15.2 40.5 C 10.2 39.8, 7.6 37.2, 7.4 32.4 C 7 26, 7.2 20.6, 7.6 15.4 C 8.2 10.4, 10.4 8, 15 7.5 Z"/>
+        <path stroke-width="1.2" opacity=".5" d="M16 9 C 23 8.4, 29 8.6, 33 9.3 M39.2 17 C 39.6 23, 39.5 28, 39 32.6"/>
+        <path stroke-width="2.6" d="M24.2 15.8 C 29.4 15.6, 32.6 19.2, 32.3 24.3 C 32 29.2, 28.6 32.4, 23.6 32.2 C 18.8 32, 15.7 28.6, 15.9 23.8 C 16.1 19.2, 19.4 16, 24.8 16.2"/>
+        <path stroke-width="3.4" d="M34.6 12.6 L 34.9 12.9"/>
+      </g>
+    </symbol>
+    <symbol id="i-tg" viewBox="0 0 48 48">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke-width="2.6" d="M24.4 5.6 C 35 5.4, 42.6 13.2, 42.4 24.2 C 42.2 34.6, 34.4 42.6, 23.6 42.4 C 13.4 42.2, 5.6 34.4, 5.8 23.8 C 6 13.6, 13.6 5.8, 25.2 5.8"/>
+        <path stroke-width="2.4" d="M13.2 23.4 C 20 20.6, 27.4 17.6, 34.2 15.2 C 33.2 21.8, 32 28.2, 30.6 34.2 C 28 32.4, 25.4 30.4, 22.8 28.6 L 34 15.4"/>
+        <path stroke-width="2.4" d="M13.2 23.4 C 16.4 24.6, 19.6 26, 22.8 28.6 C 22.4 31, 22.2 33, 22 35 C 23.4 33.4, 24.8 32, 26.2 30.8"/>
+      </g>
+    </symbol>
+    <!-- the "o" of freeflow: a round face with a zipped mouth -->
+    <symbol id="i-zipo" viewBox="0 0 40 40">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <path stroke-width="4.2" d="M20.4 3.4 C 30.6 3.2, 37 10, 36.8 20.2 C 36.6 30, 29.8 36.8, 19.8 36.6 C 10.2 36.4, 3.4 29.6, 3.6 19.6 C 3.8 10.2, 10.4 3.6, 22 4"/>
+        <path stroke-width="2.4" style="stroke: var(--zip)" d="M11 23 L 27 23 M12.6 21 L 12.6 25 M15.6 21 L 15.6 25 M18.6 21 L 18.6 25 M21.6 21 L 21.6 25 M24.6 21 L 24.6 25"/>
+        <path stroke-width="2.2" style="stroke: var(--zip)" d="M27.4 21.2 C 29.6 21, 30.4 22.4, 30.2 24.6 C 30 27, 28.4 28, 27 27.4 C 26 26.8, 26.4 24.2, 27.4 23.4"/>
+        <path stroke-width="3" d="M14 14.6 L 14.2 14.8 M25.4 14.6 L 25.6 14.8"/>
+      </g>
+    </symbol>
+    <symbol id="i-tick" viewBox="0 0 30 30">
+      <path d="M5 16 C 7.6 18, 10 20.6, 12.2 24 C 16 16.4, 20.6 10, 26 4.6" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+    <!-- duotone for the pencil drawings: the matrix takes luminance and stretches it so graphite
+         (≤ .10) is 0 and paper (≥ .86; its specks bottom out at ≈ .87) is 1, clamped; the table then
+         ramps from the ink colour to the ground colour -->
+    <!-- white print: burgundy #62121F on white -->
+    <filter id="duo-print" color-interpolation-filters="sRGB" x="0" y="0" width="1" height="1">
+      <feColorMatrix type="matrix" values="0.2797 0.9411 0.0950 0 -0.1316  0.2797 0.9411 0.0950 0 -0.1316  0.2797 0.9411 0.0950 0 -0.1316  0 0 0 1 0"/>
+      <feComponentTransfer><feFuncR type="table" tableValues="0.3843 1"/><feFuncG type="table" tableValues="0.0706 1"/><feFuncB type="table" tableValues="0.1216 1"/></feComponentTransfer>
+    </filter>
+    <!-- multiplied onto the blue page: burgundy ÷ blue → white, so ink lands exactly on #62121F and paper disappears -->
+    <filter id="duo-blend" color-interpolation-filters="sRGB" x="0" y="0" width="1" height="1">
+      <feColorMatrix type="matrix" values="0.2797 0.9411 0.0950 0 -0.1316  0.2797 0.9411 0.0950 0 -0.1316  0.2797 0.9411 0.0950 0 -0.1316  0 0 0 1 0"/>
+      <feComponentTransfer><feFuncR type="table" tableValues="0.4712 1"/><feFuncG type="table" tableValues="0.0776 1"/><feFuncB type="table" tableValues="0.1235 1"/></feComponentTransfer>
+    </filter>
+  </defs>
+</svg>
+
+<script>
+(() => {
+  // ---- settings: fill these in when they exist ----
+  const REGISTER_URL = 'https://partiful.com/e/yQGMDy3r7GFtRmhYNzRN?c=1Ntc1wTF';      // Eventbrite / Luma / Partiful event link
+  const TELEGRAM_URL = 'https://t.me/freeflownyc';      // t.me/… channel link
+  // answers and QR/flyer events go to worker.js (Cloudflare D1); off when the page is opened as a file
+  const API = /^https?:$/.test(location.protocol) ? '/api' : '';
+
+  const store = {
+    get(k) { try { return sessionStorage.getItem(k); } catch (_) { return null; } },
+    set(k, v) { try { sessionStorage.setItem(k, v); } catch (_) {} },
+    getL(k) { try { return localStorage.getItem(k); } catch (_) { return null; } },
+    setL(k, v) { try { localStorage.setItem(k, v); } catch (_) {} },
+  };
+
+  // Where the visitor came from: ?src=rule257-art03 on the flyer QR. #qr also works for testing.
+  const params = new URLSearchParams(location.search);
+  const src = params.get('src') || (location.hash === '#qr' ? 'qr-test' : 'direct');
+  const fromQR = src !== 'direct';
+  document.getElementById('f-src').value = src;
+  const track = kind => { if (API) try { navigator.sendBeacon(API + '/event', JSON.stringify({ kind, src })); } catch (_) {} };
+  if (fromQR && !store.get('ff-scan')) { store.set('ff-scan', '1'); track('scan'); }
+
+  // Apple devices add the event straight from an .ics file; everyone else gets Google Calendar
+  if (/iPhone|iPad|Macintosh/.test(navigator.userAgent)) document.querySelectorAll('.js-cal').forEach(a => { a.href = 'event.ics'; a.removeAttribute('target'); });
+  document.querySelectorAll('.js-register').forEach(a => {
+    a.addEventListener('click', () => track('register'));
+    if (REGISTER_URL) {
+      const u = new URL(REGISTER_URL);
+      u.searchParams.set('utm_source', src);
+      a.href = u.toString(); a.target = '_blank'; a.rel = 'noopener';
+    } else {
+      a.href = '#events';
+    }
+  });
+  document.querySelectorAll('.shot, .polaroid').forEach(el => {
+    el.addEventListener('contextmenu', e => e.preventDefault());
+    el.addEventListener('dragstart', e => e.preventDefault());
+    el.querySelectorAll('img').forEach(img => img.setAttribute('draggable', 'false'));
+  });
+  document.querySelectorAll('.js-tg').forEach(a => {
+    if (TELEGRAM_URL) { a.href = TELEGRAM_URL; a.target = '_blank'; a.rel = 'noopener'; }
+    else { a.removeAttribute('href'); a.setAttribute('aria-disabled', 'true'); a.title = 'Скоро'; a.style.opacity = '.55'; }
+  });
+
+  // ---- hand lettering: every letter is drawn fresh from a pencil skeleton, no two alike ----
+  const Hand = (() => {
+    const STEP = 3.2;
+    const lerp = (a, b, t) => a + (b - a) * t;
+    // stroke builders (cap height 0..100, y down)
+    function P(...c) {
+      const out = [[c[0], c[1]]];
+      for (let i = 2; i < c.length; i += 2) {
+        const [x0, y0] = out[out.length - 1], x1 = c[i], y1 = c[i + 1];
+        const n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / STEP));
+        for (let k = 1; k <= n; k++) out.push([lerp(x0, x1, k / n), lerp(y0, y1, k / n)]);
+      }
+      return out;
+    }
+    function A(cx, cy, rx, ry, a0, a1) {
+      const len = Math.abs(a1 - a0) / 360 * 2 * Math.PI * Math.max(rx, ry);
+      const n = Math.max(4, Math.ceil(len / STEP)), out = [];
+      for (let k = 0; k <= n; k++) {
+        const a = (a0 + (a1 - a0) * k / n) * Math.PI / 180;
+        out.push([cx + rx * Math.cos(a), cy + ry * Math.sin(a)]);
+      }
+      return out;
+    }
+    function Q(x0, y0, cx, cy, x1, y1) {
+      const len = Math.hypot(cx - x0, cy - y0) + Math.hypot(x1 - cx, y1 - cy);
+      const n = Math.max(3, Math.ceil(len / STEP)), out = [];
+      for (let k = 0; k <= n; k++) {
+        const t = k / n, u = 1 - t;
+        out.push([u * u * x0 + 2 * u * t * cx + t * t * x1, u * u * y0 + 2 * u * t * cy + t * t * y1]);
+      }
+      return out;
+    }
+    const cat = (...a) => a.reduce((r, s) => r.concat(r.length ? s.slice(1) : s), []);
+    const O = (cx, cy, rx, ry) => A(cx, cy, rx, ry, -105, 272);
+    const dot = (x, y) => P(x - 1.5, y - 1, x + 1.5, y + 1);
+
+    const G = {};
+    const def = (chars, strokes) => chars.split('').forEach(ch => { G[ch] = strokes; });
+    const bowlR = (x, y0, y1, r) => cat(P(x, y0, x + r * .55, y0), A(x + r * .55, (y0 + y1) / 2, r, (y1 - y0) / 2, -90, 90), P(x + r * .55, y1, x, y1));
+
+    def('АA', [P(0, 100, 35, 0, 70, 100), P(14, 66, 56, 66)]);
+    def('Б', [P(56, 0, 0, 0, 0, 100), bowlR(0, 46, 100, 30)]);
+    def('ВB', [P(0, 100, 0, 0), bowlR(0, 0, 46, 26), bowlR(0, 46, 100, 31)]);
+    def('Г', [P(54, 0, 0, 0, 0, 100)]);
+    def('Д', [P(16, 0, 64, 0, 64, 100), Q(16, 0, 16, 72, 4, 100), P(-6, 100, 76, 100), P(-6, 100, -6, 122), P(76, 100, 76, 122)]);
+    def('ЕE', [P(56, 0, 0, 0, 0, 100, 58, 100), P(0, 49, 46, 49)]);
+    def('Ё', [P(56, 0, 0, 0, 0, 100, 58, 100), P(0, 49, 46, 49), dot(14, -24), dot(42, -24)]);
+    def('Ж', [P(3, 0, 41, 50, 0, 100), P(85, 0, 47, 50, 88, 100), P(44, 0, 44, 100)]);
+    def('З3', [cat(A(28, 25, 28, 25, -160, 90), A(30, 74, 32, 26, -90, 160))]);
+    def('И', [P(0, 0, 0, 100, 62, 0, 62, 100)]);
+    def('Й', [P(0, 0, 0, 100, 62, 0, 62, 100), Q(16, -28, 31, -8, 46, -28)]);
+    def('КK', [P(0, 0, 0, 100), P(58, 0, 3, 56), P(19, 42, 62, 100)]);
+    def('Л', [P(18, 0, 62, 0, 62, 100), Q(18, 0, 18, 78, -2, 100)]);
+    def('МM', [P(0, 100, 4, 0, 40, 64, 76, 0, 80, 100)]);
+    def('НH', [P(0, 0, 0, 100), P(62, 0, 62, 100), P(0, 50, 62, 50)]);
+    def('ОO', [O(36, 50, 37, 50)]);
+    def('0', [O(30, 50, 31, 50)]);
+    def('П', [P(0, 100, 0, 0, 62, 0, 62, 100)]);
+    def('РP', [P(0, 100, 0, 0), bowlR(0, 0, 54, 28)]);
+    def('СC', [A(38, 50, 38, 50, -38, -322)]);
+    def('ТT', [P(-2, 0, 66, 0), P(32, 0, 32, 100)]);
+    def('У', [P(0, 0, 33, 60), Q(66, 0, 44, 72, 12, 100)]);
+    def('Ф', [O(38, 48, 38, 30), P(38, -6, 38, 104)]);
+    def('ХX', [P(0, 0, 64, 100), P(64, 0, 0, 100)]);
+    def('Ц', [P(0, 0, 0, 100, 72, 100, 72, 122), P(58, 0, 58, 100)]);
+    def('Ч', [cat(P(0, 0, 0, 28), Q(0, 28, 2, 56, 58, 50)), P(58, 0, 58, 100)]);
+    def('Ш', [P(0, 0, 0, 100, 84, 100, 84, 0), P(42, 0, 42, 100)]);
+    def('Щ', [P(0, 0, 0, 100, 96, 100, 96, 122), P(84, 0, 84, 100), P(42, 0, 42, 100)]);
+    def('Ъ', [P(-4, 0, 14, 0, 14, 100), bowlR(14, 46, 100, 29)]);
+    def('Ы', [P(0, 0, 0, 100), bowlR(0, 46, 100, 28), P(76, 0, 76, 100)]);
+    def('Ь', [P(0, 0, 0, 100), bowlR(0, 46, 100, 30)]);
+    def('Э', [A(26, 50, 38, 50, -145, 145), P(18, 50, 62, 50)]);
+    def('Ю', [P(0, 0, 0, 100), P(0, 50, 24, 50), O(56, 50, 32, 50)]);
+    def('Я', [P(60, 100, 60, 0), cat(P(60, 0, 30, 0), A(30, 27, 28, 27, -90, -270), P(30, 54, 60, 54)), P(36, 54, 0, 100)]);
+    def('D', [P(0, 0, 0, 100), cat(P(0, 0, 22, 0), A(22, 50, 42, 50, -90, 90), P(22, 100, 0, 100))]);
+    def('F', [P(54, 0, 0, 0, 0, 100), P(0, 48, 42, 48)]);
+    def('G', [cat(A(40, 50, 40, 50, -40, -360), P(80, 50, 80, 52, 46, 52))]);
+    def('I', [P(0, 0, 0, 100)]);
+    def('J', [cat(P(40, 0, 40, 68), A(20, 68, 20, 32, 0, 180))]);
+    def('L', [P(0, 0, 0, 100, 54, 100)]);
+    def('N', [P(0, 100, 0, 0, 62, 100, 62, 0)]);
+    def('Q', [O(38, 50, 38, 50), P(46, 70, 82, 110)]);
+    def('R', [P(0, 100, 0, 0), bowlR(0, 0, 54, 28), P(26, 54, 60, 100)]);
+    def('S', [cat(A(32, 25, 30, 25, -25, -270), A(32, 75, 32, 25, -90, 155))]);
+    G.$ = [...G.S, P(32, -14, 32, 114)];
+    def('U', [cat(P(0, 0, 0, 62), A(32, 62, 32, 38, 180, 0), P(64, 62, 64, 0))]);
+    def('V', [P(0, 0, 34, 100, 68, 0)]);
+    def('W', [P(0, 0, 20, 100, 46, 32, 72, 100, 92, 0)]);
+    def('Y', [P(0, 0, 34, 50), P(68, 0, 34, 50, 34, 100)]);
+    def('Z', [P(0, 0, 62, 0, 0, 100, 64, 100)]);
+    def('1', [P(8, 18, 30, 0, 30, 100)]);
+    def('2', [cat(A(30, 28, 30, 28, -170, 25), P(57, 40, 0, 100, 62, 100))]);
+    def('4', [P(44, 100, 44, 0, 0, 66, 64, 66)]);
+    def('5', [P(56, 0, 8, 0, 4, 44), A(28, 70, 30, 30, -125, 140)]);
+    def('6', [Q(50, 2, 6, 14, 2, 66), O(30, 70, 28, 30)]);
+    def('7', [P(0, 0, 62, 0, 20, 100)]);
+    def('8', [O(30, 25, 24, 25), O(30, 74, 30, 26)]);
+    def('9', [O(30, 30, 28, 30), Q(58, 34, 58, 90, 14, 100)]);
+    def('.', [dot(0, 94)]);
+    def(',', [P(4, 90, -4, 114)]);
+    def('!', [P(0, 0, 1, 64), dot(0, 94)]);
+    def('?', [cat(A(26, 26, 26, 24, -165, 70), P(34.9, 48.6, 26, 66)), dot(26, 94)]);
+    def('-', [P(0, 56, 30, 56)]);
+    def('‐‑', G['-']);
+    def('–', [P(0, 56, 44, 56)]);
+    def('—', [P(0, 56, 72, 56)]);
+    def('·•', [dot(0, 54)]);
+    def(':', [dot(0, 40), dot(0, 94)]);
+    def(';', [dot(2, 40), P(4, 90, -4, 114)]);
+    def('«', [P(20, 30, 0, 56, 20, 82), P(46, 30, 26, 56, 46, 82)]);
+    def('»', [P(0, 30, 20, 56, 0, 82), P(26, 30, 46, 56, 26, 82)]);
+    def('+', [P(0, 56, 48, 56), P(24, 32, 24, 80)]);
+    def('/', [P(40, -4, 0, 104)]);
+    def('(', [Q(18, -6, -8, 50, 18, 106)]);
+    def(')', [Q(0, -6, 26, 50, 0, 106)]);
+    def('\'’', [P(0, 0, -2, 22)]);
+    def('"“”„', [P(0, 0, -2, 22), P(14, 0, 12, 22)]);
+    G['&'] = [cat(P(66, 100, 12, 42), A(28, 22, 18, 22, 140, -180 - 40), Q(44, 34, 0, 56, 6, 82), Q(6, 82, 20, 104, 44, 96), P(44, 96, 66, 66))];
+
+    // seeded random
+    function rng(seed) {
+      let s = seed % 2147483647; if (s <= 0) s += 2147483646;
+      return () => (s = (s * 16807) % 2147483647) / 2147483647;
+    }
+    function hash(str) { let h = 2166136261; for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+
+    const f1 = n => Math.round(n * 10) / 10;
+    function line(pts) {
+      let d = 'M' + f1(pts[0][0]) + ' ' + f1(pts[0][1]);
+      for (let i = 1; i < pts.length; i++) d += 'L' + f1(pts[i][0]) + ' ' + f1(pts[i][1]);
+      return d;
+    }
+    // smooth path through points (midpoint quadratics)
+    function smooth(pts) {
+      if (pts.length < 3) return line(pts);
+      let d = 'M' + f1(pts[0][0]) + ' ' + f1(pts[0][1]);
+      for (let i = 1; i < pts.length - 1; i++) {
+        const mx = (pts[i][0] + pts[i + 1][0]) / 2, my = (pts[i][1] + pts[i + 1][1]) / 2;
+        d += 'Q' + f1(pts[i][0]) + ' ' + f1(pts[i][1]) + ' ' + f1(mx) + ' ' + f1(my);
+      }
+      const l = pts[pts.length - 1];
+      return d + 'L' + f1(l[0]) + ' ' + f1(l[1]);
+    }
+
+    const CAP = .57;            // centre-line cap height in em (visual caps ≈ .72em with the stroke)
+    const TOP = -16, BOT = 116; // vertical box in glyph units
+
+    // draw one glyph instance: returns {core, scrib, speck, minX, maxX}
+    function draw(strokes, r, px, wFix) {
+      const W = wFix || 24 + r() * 5;
+      const sx = .84 + r() * .15, sy = .94 + r() * .1, slant = (r() - .5) * .13, rot = (r() - .5) * .07, dy = (r() - .5) * 7;
+      const ph1 = r() * 6.3, ph2 = r() * 6.3, fq1 = .018 + r() * .03, fq2 = .018 + r() * .03, am1 = 1.5 + r() * 3, am2 = 1.5 + r() * 3;
+      const cr = Math.cos(rot), sr = Math.sin(rot);
+      const warp = ([x, y]) => {
+        x += am1 * Math.sin(y * fq1 + ph1);
+        y += am2 * Math.sin(x * fq2 + ph2);
+        x *= sx; y = (y - 100) * sy + 100;
+        x += slant * (100 - y);
+        const X = x * cr - (y - 50) * sr, Y = x * sr + (y - 50) * cr + 50;
+        return [X, Y + dy];
+      };
+      const S = [];
+      strokes.forEach(s => {
+        let start = 0;
+        for (let i = 1; i < s.length - 1; i++) {
+          const a1 = Math.atan2(s[i][1] - s[i - 1][1], s[i][0] - s[i - 1][0]);
+          const a2 = Math.atan2(s[i + 1][1] - s[i][1], s[i + 1][0] - s[i][0]);
+          let d = Math.abs(a2 - a1); if (d > Math.PI) d = 2 * Math.PI - d;
+          if (d > .9) { S.push(s.slice(start, i + 1)); start = i; }
+        }
+        S.push(s.slice(start));
+      });
+      S.forEach((s, i) => { S[i] = s.map(warp); });
+      // pencil line width in glyph units: ~1.6px on screen, kept within a sane share of the stroke
+      const unitsPerPx = 100 / (px * CAP);
+      const lw = Math.min(Math.max(1.5 * unitsPerPx, W * .06), W * .16);
+      const n = Math.max(3, Math.min(20, Math.round(W / lw * .95)));
+      const specks = px > 80 ? 4 : px > 40 ? 3 : 1;
+      let core = '', scrib = '', speck = '';
+      let minX = 1e9, maxX = -1e9;
+      S.forEach(pts => {
+        pts.forEach(p => { minX = Math.min(minX, p[0]); maxX = Math.max(maxX, p[0]); });
+        // the solid core stops short of the ends so the pencil lines shape the stroke tips
+        const trim = Math.min(Math.round(W * .3 / STEP), Math.floor((pts.length - 2) / 2));
+        const cp = trim > 0 ? pts.slice(trim, pts.length - trim) : pts;
+        core += smooth(cp);
+        const N = pts.length;
+        const nor = pts.map((p, i) => {
+          const a = pts[Math.max(0, i - 1)], b = pts[Math.min(N - 1, i + 1)];
+          const dx = b[0] - a[0], dy2 = b[1] - a[1], l = Math.hypot(dx, dy2) || 1;
+          return [-dy2 / l, dx / l, dx / l, dy2 / l];
+        });
+        const pass = (k, total, spread, out) => {
+          const base = ((k + .5) / total * 2 - 1) * spread;
+          const f = .04 + r() * .08, ph = r() * 6.3, amp = W * (.025 + r() * .05);
+          const e0 = (r() - .45) * W * .3, e1 = (r() - .45) * W * .3;
+          const q = [];
+          for (let i = 0; i < N; i++) {
+            const o = (base + amp * Math.sin(i * STEP * f + ph)) + (r() - .5) * W * .035;
+            let [x, y] = pts[i];
+            const [nx, ny, tx, ty] = nor[i];
+            x += nx * o; y += ny * o;
+            if (i === 0) { x -= tx * e0; y -= ty * e0; }
+            if (i === N - 1) { x += tx * e1; y += ty * e1; }
+            q.push([x, y]);
+          }
+          return out + smooth(q);
+        };
+        for (let k = 0; k < n; k++) scrib = pass(k, n, W * .44, scrib);
+        for (let k = 0; k < specks; k++) {
+          const u = lw * (.45 + r() * .5);
+          speck += `<path d="${pass(r() * 5 | 0, 5, W * .34, '')}" stroke-width="${f1(u)}" stroke-dasharray="${f1(u * (1 + r() * 3))} ${f1(u * (9 + r() * 14))} ${f1(u * (.5 + r() * 1.5))} ${f1(u * (12 + r() * 20))}" stroke-dashoffset="${f1(r() * 40)}"/>`;
+        }
+      });
+      return { core, scrib, speck, W, lw, minX: minX - W / 2, maxX: maxX + W / 2 };
+    }
+
+    const paint = d => `<path d="${d.core}" stroke-width="${f1(d.W * .78)}" class="hc"/><path d="${d.scrib}" stroke-width="${f1(d.lw)}" class="hs"/><g class="hp">${d.speck}</g>`;
+    let maskN = 0;
+    function word(text, seed, px) {
+      const r = rng(seed);
+      let x = 0, body = '';
+      for (const ch of text) {
+        const g = G[ch];
+        if (!g) { x += 34; continue; }
+        const d = draw(g, r, px);
+        const tx = x - d.minX;
+        body += `<g transform="translate(${f1(tx)} 0)">${paint(d)}</g>`;
+        x += (d.maxX - d.minX) + (r() - .3) * 7;
+      }
+      const w = Math.max(1, x - 2);
+      const k = CAP / 100;
+      // strokes go into a mask and one rect carries the paint, so the paper texture runs
+      // continuously across the whole word instead of restarting (and seaming) at every letter
+      const id = 'hm' + (++maskN), bx = `x="-60" y="${TOP - 60}" width="${f1(w + 120)}" height="${BOT - TOP + 120}"`;
+      return `<svg class="hw" viewBox="0 ${TOP} ${f1(w)} ${BOT - TOP}" style="width:${(w * k).toFixed(3)}em;height:${((BOT - TOP) * k).toFixed(3)}em" aria-hidden="true"><mask id="${id}" maskUnits="userSpaceOnUse" ${bx}><g stroke="#fff">${body}</g></mask><rect class="hfill" ${bx} mask="url(#${id})"/></svg>`;
+    }
+
+    // replace the text of an element with drawn words; keeps child elements (accents, <br>, marks)
+    function letter(el) {
+      const px = parseFloat(getComputedStyle(el).fontSize) || 32;
+      const label = el.textContent.replace(/\s+/g, ' ').trim();
+      let seed = hash(label) || 1;
+      const walk = node => {
+        [...node.childNodes].forEach(n => {
+          if (n.nodeType === 3) {
+            const frag = document.createDocumentFragment();
+            n.textContent.split(/(\s+)/).forEach(part => {
+              if (!part) return;
+              if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
+              const s = document.createElement('span');
+              s.className = 'hword';
+              s.innerHTML = word(part.toUpperCase(), seed = (seed * 48271) % 2147483647 || 7, px);
+              frag.appendChild(s);
+            });
+            n.replaceWith(frag);
+          } else if (n.nodeType === 1 && !/^(svg|br)$/i.test(n.tagName) && !n.classList.contains('sr') && !n.classList.contains('zip-o')) {
+            walk(n);
+          }
+        });
+      };
+      walk(el);
+      if (!el.hasAttribute('aria-label') && !el.closest('[aria-hidden="true"]')) {
+        const sr = document.createElement('span'); sr.className = 'sr'; sr.textContent = label;
+        el.prepend(sr);
+      }
+      el.classList.add('drawn');
+    }
+    // the face ring of the zip-mouth "o", drawn like the letters; returns markup for a 40×40 box
+    function ring(seed, px) {
+      const d = draw([O(50, 50, 46, 46)], rng(seed), px * 1.23, 19);
+      return `<g transform="translate(2 2) scale(.36)">${paint(d)}</g>`;
+    }
+    return { letter, ring };
+  })();
+  document.querySelectorAll('.hand').forEach(Hand.letter);
+  // giant key words fill their column (the drawn letters are sized in em, so font-size scales them)
+  const fitKeys = () => document.querySelectorAll('.fit').forEach(el => {
+    el.style.fontSize = '';
+    const box = el.parentElement.clientWidth, w = el.offsetWidth;   // both in layout px, so page zoom doesn't skew the ratio
+    if (!w || !box) return;
+    const fs = parseFloat(getComputedStyle(el).fontSize);
+    const small = parseFloat(getComputedStyle(el.parentElement).fontSize);
+    el.style.fontSize = Math.min(fs * box / w, small * 4.2) + 'px';
+  });
+  fitKeys();
+
+  // ---- gallery: arrows and mouse drag on desktop (touch swipes natively) ----
+  const gal = document.querySelector('.gallery');
+  if (gal) {
+    const step = () => (gal.querySelector('.fly')?.offsetWidth || 400) + 44;
+    document.querySelectorAll('.gal-btn').forEach(b => b.addEventListener('click', () => gal.scrollBy({ left: +b.dataset.dir * step(), behavior: 'smooth' })));
+    let x0 = 0, s0 = 0, down = false, moved = false;
+    let z = 1;
+    gal.addEventListener('dragstart', e => e.preventDefault());
+    gal.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse' || e.button) return; down = true; moved = false; x0 = e.clientX; s0 = gal.scrollLeft; z = gal.getBoundingClientRect().width / gal.offsetWidth || 1; });
+    addEventListener('pointermove', e => { if (!down) return; const dx = (e.clientX - x0) / z; if (Math.abs(dx) > 4) { moved = true; gal.classList.add('dragging'); } if (moved) gal.scrollLeft = s0 - dx; });
+    addEventListener('pointerup', () => { if (!down) return; down = false; if (moved) { gal.classList.remove('dragging'); const w = step(); gal.scrollTo({ left: Math.round(gal.scrollLeft / w) * w, behavior: 'smooth' }); } });
+  }
+  let fitT; addEventListener('resize', () => { clearTimeout(fitT); fitT = setTimeout(fitKeys, 120); });
+
+  // ---- the "o" of freeflow unzips its mouth and talks ----
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const zipSVG = ring => `<svg class="zsvg" viewBox="0 0 40 40" aria-hidden="true">
+    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      ${ring}
+      <g class="eyes"><path stroke-width="3" d="M14 14.6 L 14.2 14.8 M25.4 14.6 L 25.6 14.8"/></g>
+    </g>
+    <g class="mouth"><g class="jaw">
+      <path d="M10.6 23 C 12 18.4, 26.2 18.4, 27.6 23 C 26.2 28.4, 12 28.4, 10.6 23 Z" style="fill: var(--mouth); stroke: var(--mouth)" stroke-width="1.4" stroke-linejoin="round"/>
+      <path d="M14.6 25.6 C 16.8 23.6, 21.4 23.6, 23.6 25.6 C 21.4 27.2, 16.8 27.2, 14.6 25.6 Z" style="fill: var(--tongue)"/>
+    </g></g>
+    <path class="zline" d="M27 23 L 11 23" pathLength="16" fill="none" style="stroke: var(--zip)" stroke-width="2.4" stroke-linecap="round"/>
+    <g class="teeth" fill="none" style="stroke: var(--zip)" stroke-width="2.4" stroke-linecap="round">
+      <path d="M24.6 21 L 24.6 25"/><path d="M21.6 21 L 21.6 25"/><path d="M18.6 21 L 18.6 25"/><path d="M15.6 21 L 15.6 25"/><path d="M12.6 21 L 12.6 25"/>
+    </g>
+    <g class="pull"><path d="M27.4 21.2 C 29.6 21, 30.4 22.4, 30.2 24.6 C 30 27, 28.4 28, 27 27.4 C 26 26.8, 26.4 24.2, 27.4 23.4" fill="none" style="stroke: var(--zip)" stroke-width="2.2" stroke-linecap="round"/></g>
+    <g class="sound" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="M39.4 18.4 C 41 20.6, 41 24.4, 39.4 26.6"/><path d="M42.8 16 C 45.2 19.6, 45.2 25.4, 42.8 29"/>
+    </g>
+  </svg>`;
+  const zips = [...document.querySelectorAll('.zip-o')];
+  zips.forEach((el, i) => {
+    const px = parseFloat(getComputedStyle(el).fontSize) || 24;
+    el.innerHTML = zipSVG(Hand.ring(101 + i * 7919, px)) + (el.closest('.wordmark') ? '<span class="say">привет!</span>' : '');
+  });
+
+  // the footer wordmark always spans its panel exactly
+  const wm = document.querySelector('.wordmark');
+  if (wm) {
+    let lastW = 0;
+    const fit = () => {
+      const box = wm.parentElement, cs = getComputedStyle(box);
+      const have = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      if (!have || have === lastW) return;
+      lastW = have;
+      const fs = parseFloat(getComputedStyle(wm).fontSize), need = wm.getBoundingClientRect().width;
+      if (need) wm.style.fontSize = (fs * have / need * .995).toFixed(2) + 'px';
+    };
+    fit();
+    if ('ResizeObserver' in window) new ResizeObserver(fit).observe(wm.parentElement);
+  }
+  function talk(el) {
+    if (reduceMotion) return;
+    clearTimeout(el._zipT); clearTimeout(el._doneT);
+    el.classList.remove('talk', 'zipup');
+    void el.getBoundingClientRect();
+    el.classList.add('talk');
+    // unzip .9s + talk 2.2s, then zip back up
+    el._zipT = setTimeout(() => {
+      el.classList.remove('talk'); el.classList.add('zipup');
+      el._doneT = setTimeout(() => el.classList.remove('zipup'), 900);
+    }, 3300);
+  }
+  zips.forEach(el => {
+    const host = el.closest('a, .wordmark') || el;
+    host.addEventListener('mouseenter', () => talk(el));
+    host.addEventListener('click', () => talk(el));
+  });
+  // it also talks on its own: when it scrolls into view, then every ~8 s while on screen
+  const seen = new Set();
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) { if (!seen.has(e.target)) { seen.add(e.target); talk(e.target); } }
+      else seen.delete(e.target);
+    }), { threshold: .6 });
+    zips.forEach(el => io.observe(el));
+    setInterval(() => seen.forEach(el => { if (!el.classList.contains('talk') && !el.classList.contains('zipup')) talk(el); }), 8000);
+  }
+  const headerZip = document.querySelector('.logo .zip-o');
+  const greet = () => { if (headerZip) setTimeout(() => talk(headerZip), 500); };
+
+  // ---- survey ----
+  const dlg = document.getElementById('survey');
+  const body = document.getElementById('survey-body');
+  const thanks = document.getElementById('survey-thanks');
+  function openSurvey() {
+    body.hidden = false; thanks.hidden = true;
+    if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); }
+    else dlg.setAttribute('open', '');
+  }
+  function closeSurvey() { if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); }
+  document.querySelectorAll('.js-open-survey').forEach(b => b.addEventListener('click', openSurvey));
+  document.getElementById('survey-close').addEventListener('click', () => { if (!body.hidden) track('survey-skip'); closeSurvey(); });
+  document.getElementById('survey-skip').addEventListener('click', () => { store.setL('ff-survey', 'skipped'); track('survey-skip'); closeSurvey(); });
+  document.getElementById('survey-done').addEventListener('click', () => { closeSurvey(); document.getElementById('events').scrollIntoView(); });
+  dlg.addEventListener('click', e => { if (e.target === dlg) closeSurvey(); });
+  document.getElementById('survey-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const data = new FormData(e.target);
+    data.set('goal', data.getAll('goal').join(', '));
+    data.set('ts', new Date().toISOString());
+    if (API) { try { await fetch(API + '/survey', { method: 'POST', body: data }); } catch (_) {} }
+    store.setL('ff-survey', 'done');
+    body.hidden = true; thanks.hidden = false;
+  });
+  function afterIntro() { greet(); if (fromQR && !store.getL('ff-survey')) setTimeout(openSurvey, 250); }
+
+  // ---- intro: "before" gets scribbled over by "after" ----
+  const intro = document.getElementById('intro');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || store.get('ff-intro')) { intro.remove(); afterIntro(); return; }
+  store.set('ff-intro', '1');
+  document.documentElement.style.overflow = 'hidden';
+
+  const path = document.getElementById('scribble');
+  const cap = document.getElementById('intro-cap');
+  const len = path.getTotalLength();
+  path.style.strokeDasharray = len;
+  path.style.strokeDashoffset = len;
+  let done = false, raf = 0;
+  const timers = [];
+  function finish() {
+    if (done) return;
+    done = true;
+    timers.forEach(clearTimeout); cancelAnimationFrame(raf);
+    intro.classList.add('out');
+    document.documentElement.style.overflow = '';
+    setTimeout(() => { intro.remove(); afterIntro(); }, 600);
+  }
+  document.getElementById('intro-skip').addEventListener('click', finish);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') finish(); }, { once: true });
+  requestAnimationFrame(() => intro.classList.remove('start'));
+  timers.push(setTimeout(() => {
+    const t0 = performance.now(), dur = 1300;
+    const step = now => {
+      const p = Math.min(1, (now - t0) / dur);
+      const e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      path.style.strokeDashoffset = len * (1 - e);
+      if (p < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    cap.style.opacity = 0;
+    timers.push(setTimeout(() => { cap.innerHTML = 'после <span class="accent">freeflow</span>'; Hand.letter(cap); cap.style.opacity = 1; }, 700));
+  }, 1900));
+  timers.push(setTimeout(finish, 5200));
+})();
+// first-screen footage drifts away slower than the page: it moves down inside its clipped box
+// while the box scrolls up, so on screen it travels at ~40% of the scroll speed
+(() => {
+  const stage = document.querySelector('.stage'), media = stage && stage.querySelector('.stage-media');
+  if (!media || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const LAG = .6;
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const y = Math.min(Math.max(window.scrollY, 0), stage.offsetHeight + stage.offsetTop);
+    media.style.transform = `translate3d(0, ${(y * LAG).toFixed(1)}px, 0)`;
+  };
+  addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
+  update();
+})();
+
+// first-screen footage: load and play only while on screen (a hidden clip never loads); reduced motion keeps the still poster
+(() => {
+  const vids = document.querySelectorAll('.stage video');
+  if (!vids.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      const v = e.target;
+      if (e.isIntersecting) {
+        if (!v.dataset.loaded) { v.querySelectorAll('source').forEach(src => { src.src = src.dataset.src; }); v.dataset.loaded = '1'; v.load(); }
+        v.play().catch(() => {});
+      }
+      else v.pause();
+    }
+  }, { rootMargin: '200px 0px' });
+  vids.forEach(v => io.observe(v));
+})();
+</script>
+</body>
+</html>
