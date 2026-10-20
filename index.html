@@ -498,7 +498,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
 .intro .before { transition: opacity .5s ease, transform .9s cubic-bezier(.2, .7, .2, 1); }
 .intro.start .before { opacity: 0; transform: scale(.97); transform-origin: center; }
 @media (max-aspect-ratio: 1/1) { .intro-stage { gap: 28px; } .intro-cap { font-size: 40px; } }
-@media (prefers-reduced-motion: reduce) { .intro { display: none; } }
+@media (prefers-reduced-motion: reduce) { .intro, .intro .before { transition: none !important; } .intro.start .before { transform: none; } }
 
 .intro-stage > svg { filter: url(#duo-print); background: #fff; transform: rotate(-1deg); box-shadow: 0 12px 30px var(--shadow-c); } /* drawings printed on a white sheet, like the flyers */
 
@@ -1328,8 +1328,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
   // ---- intro: "before" gets scribbled over by "after" ----
   const intro = document.getElementById('intro');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (reduce || store.get('ff-intro')) { intro.remove(); afterIntro(); return; }
-  store.set('ff-intro', '1');
+  // shown on every visit; with reduced motion the "after" picture simply replaces "before" (no scribble)
   document.documentElement.style.overflow = 'hidden';
 
   const path = document.getElementById('scribble');
@@ -1351,9 +1350,9 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') finish(); }, { once: true });
   requestAnimationFrame(() => intro.classList.remove('start'));
   timers.push(setTimeout(() => {
-    const t0 = performance.now(), dur = 1300;
+    const t0 = performance.now(), dur = reduce ? 0 : 1300;
     const step = now => {
-      const p = Math.min(1, (now - t0) / dur);
+      const p = dur ? Math.min(1, (now - t0) / dur) : 1;
       const e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
       path.style.strokeDashoffset = len * (1 - e);
       if (p < 1) raf = requestAnimationFrame(step);
