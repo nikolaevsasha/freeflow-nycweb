@@ -492,7 +492,6 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
 .survey-x svg { width: 26px; height: 26px; }
 .survey h2 { font-size: clamp(28px, 6vw, 40px); padding-right: 40px; }
 .survey .sub { color: var(--soft); margin: 12px 0 22px; font-size: 16px; }
-.survey form { display: grid; gap: 22px; }
 .survey fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 .survey legend { font-weight: 600; margin-bottom: 10px; padding: 0; }
 .opts { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -505,9 +504,14 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
 .field { display: grid; gap: 8px; }
 .field label { font-weight: 600; }
 .field input { font: inherit; font-size: 17px; padding: 13px 15px; color: var(--ink); border: 2px solid var(--ink); border-radius: var(--wobble-2); background: var(--field); width: 100%; }
-.survey .actions { margin-top: 4px; }
-.thanks { display: grid; gap: 16px; justify-items: start; }
-.trap { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.survey .actions { margin-top: 6px; }
+.survey .step { display: grid; gap: 4px; }
+.survey .step legend { font-size: 22px; margin-bottom: 12px; }
+.survey .step .opt span { font-size: 18px; padding: 11px 17px; }
+.survey .step-n { font-size: 15px; color: var(--soft); }
+.survey-result { display: grid; gap: 12px; justify-items: start; margin-top: 14px; }
+.result-line { font-size: 21px; line-height: 1.3; }
+.result-note { color: var(--soft); }
 @media (max-width: 599px) {
   dialog.survey { width: 100vw; max-width: 100vw; margin: auto 0 0; border-radius: 22px 22px 0 0; border-bottom: 0; box-shadow: none; max-height: 92vh; }
   .survey-scroll { max-height: 92vh; padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px)); }
@@ -826,49 +830,13 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
 <dialog class="survey" id="survey" aria-labelledby="survey-title">
   <button class="survey-x" type="button" id="survey-close" aria-label="Закрыть"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M4.4 13.8 C 6.8 16.2, 8.8 18.6, 10.4 21 C 13.4 15.2, 17.2 9.6, 22 4.8" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <div class="survey-scroll">
-    <div id="survey-body">
-      <h2 class="hand" id="survey-title">С чем ты придёшь?</h2>
-      <p class="sub">30 секунд, четыре ответа. Катя заранее поймёт, над чем тебе важно поработать.</p>
-      <form id="survey-form">
-        <input type="hidden" name="src" id="f-src">
-        <input class="trap" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <fieldset>
-          <legend>Насколько ты доволен(а) тем, как говоришь?</legend>
-          <div class="opts">
-            <label class="opt"><input type="radio" name="mood" value="great" id="m1"><span>Всё отлично</span></label>
-            <label class="opt"><input type="radio" name="mood" value="ok" id="m2"><span>Есть что улучшить</span></label>
-            <label class="opt"><input type="radio" name="mood" value="lost" id="m3"><span>Часто теряюсь</span></label>
-            <label class="opt"><input type="radio" name="mood" value="pain" id="m4"><span>Больная тема</span></label>
-          </div>
-        </fieldset>
-        <fieldset>
-          <legend>Что хочешь прокачать?</legend>
-          <div class="opts">
-            <label class="opt"><input type="checkbox" name="goal" value="diction" id="g1"><span>Дикция</span></label>
-            <label class="opt"><input type="checkbox" name="goal" value="voice" id="g2"><span>Голос</span></label>
-            <label class="opt"><input type="checkbox" name="goal" value="confidence" id="g3"><span>Уверенность</span></label>
-            <label class="opt"><input type="checkbox" name="goal" value="self" id="g4"><span>Рассказ о себе</span></label>
-            <label class="opt"><input type="checkbox" name="goal" value="camera" id="g5"><span>Камера и блог</span></label>
-            <label class="opt"><input type="checkbox" name="goal" value="people" id="g6"><span>Знакомства</span></label>
-          </div>
-        </fieldset>
-        <div class="field">
-          <label for="f-name">Как тебя зовут?</label>
-          <input id="f-name" name="name" type="text" autocomplete="given-name" placeholder="Имя">
-        </div>
-        <div class="field">
-          <label for="f-contact">Где тебе написать?</label>
-          <input id="f-contact" name="contact" type="text" autocomplete="off" placeholder="@telegram или @instagram">
-        </div>
-        <div class="actions">
-          <button class="btn" type="submit">Отправить</button>
-        </div>
-      </form>
-    </div>
-    <div class="thanks" id="survey-thanks" hidden>
-      <h2 class="hand">Спасибо!</h2>
-      <p>Мы напишем тебе. А пока — вот что будет 24 октября.</p>
-      <button class="btn" type="button" id="survey-done">Смотреть мастер-класс</button>
+    <h2 class="hand" id="survey-title">Это про тебя?</h2>
+    <p class="sub" id="survey-sub"></p>
+    <div id="survey-steps"></div>
+    <div class="survey-result" id="survey-result" hidden>
+      <p class="result-line" id="survey-line"></p>
+      <p class="result-note" id="survey-note"></p>
+      <div class="actions" id="survey-actions"></div>
     </div>
   </div>
 </dialog>
@@ -940,7 +908,6 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
   const params = new URLSearchParams(location.search);
   const src = params.get('src') || (location.hash === '#qr' ? 'qr-test' : 'direct');
   const fromQR = src !== 'direct';
-  document.getElementById('f-src').value = src;
   // ---- analytics: one call per event, sent to GA4 (and any tool added later); ?debug=1 shows them on the page ----
   const DEBUG = params.has('debug');
   let dbg = null;
@@ -1375,36 +1342,92 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
   const headerZip = document.querySelector('.logo .zip-o');
   const greet = () => { if (headerZip) setTimeout(() => talk(headerZip), 500); };
 
-  // ---- survey ----
+  // ---- surveys: one tap per question, then a result. Each question asks about one thing only:
+  // quiz = what happens (symptom) and what for (goal); waitlist = which course final and when.
+  // Choices go to analytics; contacts are not asked here (Partiful and Telegram collect them).
+  const FORMS = {
+    quiz: {
+      title: 'Это про тебя?', sub: 'Два вопроса, по одному тапу.',
+      qs: [
+        { q: 'symptom', t: 'Что бывает?', opts: [['voice', 'Голос садится'], ['thoughts', 'Мысли разбегаются'], ['tense', 'Зажимаюсь'], ['unheard', 'Меня не слушают']] },
+        { q: 'goal', t: 'Зачем тебе?', opts: [['acting', 'Актёрство'], ['content', 'Контент'], ['stage', 'Выступления'], ['life', 'Увереннее в жизни']] },
+      ],
+      done: 'Про тебя.',
+      line: {
+        voice: 'Голос садится от зажатого дыхания. Катя покажет упражнения, которые актёры делают перед выходом на сцену.',
+        thoughts: 'Мысль держится на простой схеме. По ней ты соберёшь короткий рассказ о себе прямо на занятии.',
+        tense: 'Зажим снимают через тело, а не уговорами. Начнём с упражнений, после которых легче стоять и говорить.',
+        unheard: 'Слушают не самого громкого, а того, кто держит паузу. Разберём подачу на твоём примере.',
+      },
+      note: {
+        acting: 'Для актёрства это база: голос, тело, текст.',
+        content: 'В кадре работает то же, что вживую.',
+        stage: 'Выступление начинается до первого слова.',
+        life: 'Пригодится на работе, на свидании и в компании.',
+      },
+      actions: [['register', 'Записаться на 24.10'], ['details', 'Подробнее']],
+    },
+    waitlist: {
+      title: 'Лист ожидания', sub: 'Курс стартует после мастер-класса.',
+      qs: [
+        { q: 'final', t: 'Какой финал твой?', opts: [['stories', 'Вечер историй'], ['video', 'Видеовизитка'], ['reels', 'Первый Reels'], ['unsure', 'Пока не знаю']] },
+        { q: 'time', t: 'Когда удобно?', opts: [['weekday', 'Будни вечером'], ['weekend', 'Выходные днём']] },
+      ],
+      done: 'Откроем в Telegram.',
+      line: () => 'Запись на курс сначала получат подписчики канала. Там же расписание и цена.',
+      note: () => '',
+      actions: [['telegram', 'Подписаться в Telegram'], ['register', 'Записаться на мастер-класс']],
+    },
+  };
   const dlg = document.getElementById('survey');
-  const body = document.getElementById('survey-body');
-  const thanks = document.getElementById('survey-thanks');
-  let form = 'quiz';
-  const answered = () => ['mood', 'goal', 'name', 'contact'].filter(n => [...document.querySelectorAll(`#survey-form [name="${n}"]`)].some(i => (i.type === 'radio' || i.type === 'checkbox') ? i.checked : i.value.trim())).length;
-  function openSurvey(place = 'auto', kind = 'quiz') {
-    form = kind;
+  const $ = id => document.getElementById(id);
+  let form = 'quiz', step = 0, answers = {};
+  const drawTitle = text => { const h = $('survey-title'); h.textContent = text; h.classList.remove('drawn'); Hand.letter(h); };
+  function renderStep() {
+    const F = FORMS[form], Q = F.qs[step];
+    $('survey-steps').innerHTML = `<fieldset class="step"><legend><span class="step-n">${step + 1} / ${F.qs.length}</span><br>${Q.t}</legend><div class="opts">` +
+      Q.opts.map(([v, t], k) => `<label class="opt"><input type="radio" name="${Q.q}" value="${v}" id="${form}-${Q.q}-${k}"><span>${t}</span></label>`).join('') + '</div></fieldset>';
+    $('survey-steps').querySelectorAll('input').forEach(i => i.addEventListener('change', () => {
+      answers[Q.q] = i.value;
+      track('quiz_answer', { form, q: Q.q, a: i.value });
+      setTimeout(() => { step++; step < F.qs.length ? renderStep() : showResult(); }, 220);
+    }));
+  }
+  function showResult() {
+    const F = FORMS[form];
+    const pick = (m, k) => typeof m === 'function' ? m() : (m[answers[k]] || '');
+    $('survey-steps').innerHTML = ''; $('survey-sub').hidden = true;
+    drawTitle(F.done);
+    $('survey-line').textContent = pick(F.line, F.qs[0].q);
+    $('survey-note').textContent = pick(F.note, F.qs[1].q);
+    const reg = document.querySelector('.js-register');
+    $('survey-actions').innerHTML = F.actions.map(([kind, label], k) =>
+      kind === 'register' ? `<a class="btn${k ? ' ghost' : ''}" data-act="register" href="${reg.href}" target="_blank" rel="noopener">${label}</a>`
+      : kind === 'telegram' ? `<a class="btn${k ? ' ghost' : ''}" data-act="telegram" href="${TELEGRAM_URL}" target="_blank" rel="noopener">${label}</a>`
+      : `<button class="btn ghost" type="button" data-act="details">${label}</button>`).join('');
+    $('survey-actions').querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => {
+      if (b.dataset.act === 'register') track('register_click', { place: form });
+      if (b.dataset.act === 'telegram') track('social_click', { network: 'telegram', place: form });
+      if (b.dataset.act === 'details') { closeSurvey(); $('events').scrollIntoView(); }
+    }));
+    $('survey-result').hidden = false;
+    track('quiz_submit', { form, ...answers });
+  }
+  function openSurvey(place, kind) {
+    form = kind; step = 0; answers = {};
     track('quiz_open', { form, place });
-    body.hidden = false; thanks.hidden = true;
+    drawTitle(FORMS[form].title);
+    $('survey-sub').textContent = FORMS[form].sub; $('survey-sub').hidden = false;
+    $('survey-result').hidden = true;
+    renderStep();
     if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); }
     else dlg.setAttribute('open', '');
   }
   function closeSurvey() { if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); }
   document.querySelectorAll('.js-open-survey').forEach(b => b.addEventListener('click', () => openSurvey(b.dataset.place || 'other', b.dataset.form || 'quiz')));
-  document.querySelectorAll('#survey-form input[type=radio], #survey-form input[type=checkbox]').forEach(i => i.addEventListener('change', () => { if (i.checked) track('quiz_answer', { form, q: i.name, a: i.value }); }));
-  document.getElementById('survey-close').addEventListener('click', () => { if (!body.hidden) { if (!store.getL('ff-survey')) store.setL('ff-survey', 'skipped'); track('quiz_close', { form, step: answered() }); } closeSurvey(); });
-  document.getElementById('survey-done').addEventListener('click', () => { closeSurvey(); document.getElementById('events').scrollIntoView(); });
+  $('survey-close').addEventListener('click', () => { if ($('survey-result').hidden) track('quiz_close', { form, step }); closeSurvey(); });
   dlg.addEventListener('click', e => { if (e.target === dlg) closeSurvey(); });
-  document.getElementById('survey-form').addEventListener('submit', async e => {
-    e.preventDefault();
-    const data = new FormData(e.target);
-    data.set('goal', data.getAll('goal').join(', '));
-    data.set('ts', new Date().toISOString());
-    // answers themselves go to a Google Form once it exists; analytics only gets the choices, never name or contact
-    track('quiz_submit', { form, contact: data.get('contact') ? 'yes' : 'no', mood: data.get('mood') || '', goal: data.get('goal') || '' });
-    store.setL('ff-survey', 'done');
-    body.hidden = true; thanks.hidden = false;
-  });
-  function afterIntro() { greet(); startViewTracking(); if (fromQR && !store.getL('ff-survey')) setTimeout(() => openSurvey('auto'), 250); }
+  function afterIntro() { greet(); startViewTracking(); }
 
   // ---- intro: "before" gets scribbled over by "after" ----
   const intro = document.getElementById('intro');
