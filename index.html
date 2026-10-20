@@ -6,6 +6,27 @@
 <title>freeflow.nyc</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <script>if (location.protocol === 'http:' && /(^|\.)freeflow\.nyc$/.test(location.hostname)) location.replace('https://freeflow.nyc' + location.pathname + location.search + location.hash); document.documentElement.classList.add('js')</script>
+<!-- Google Analytics 4. ?src= (flyer QR, Instagram, Telegram, chats) is turned into utm_* so GA credits the visit -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Y10LQ57XQ2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  (function () {
+    var q = new URLSearchParams(location.search), src = q.get('src'), cfg = {};
+    if (src && !q.get('utm_source')) {
+      var kind = /^\d\d-/.test(src) ? 'flyer' : src.split('-')[0];
+      var source = { flyer: 'flyer', ig: 'instagram', tg: 'telegram', chat: 'chat' }[kind] || kind;
+      var medium = { flyer: 'qr', ig: 'social', tg: 'social', chat: 'chat' }[kind] || 'referral';
+      var u = new URL(location.href);
+      u.searchParams.set('utm_source', source); u.searchParams.set('utm_medium', medium);
+      u.searchParams.set('utm_campaign', 'mk-2410'); u.searchParams.set('utm_content', src);
+      cfg.page_location = u.toString();
+    }
+    if (q.has('debug')) cfg.debug_mode = true;
+    gtag('config', 'G-Y10LQ57XQ2', cfg);
+  })();
+</script>
 <meta name="description" content="Мастер-класс по голосу и речи на русском в Нью-Йорке. Ведёт актриса театра и кино Катя Черепанова. Сб, 24 октября, Rule 25/7.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#62121F">
@@ -605,15 +626,15 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
         <a class="icon-link js-ig" href="https://instagram.com/freeflow.nyc" aria-label="Instagram freeflow.nyc"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#i-ig"/></svg></a>
         <a class="icon-link js-tg" href="https://t.me/freeflownyc" aria-label="Telegram freeflownyc"><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#i-tg"/></svg></a>
       </div>
-      <button class="btn ghost sm js-open-survey top-quiz" type="button">Это про меня?</button>
-      <a class="btn sm js-register" href="#events">Записаться</a>
+      <button class="btn ghost sm js-open-survey top-quiz" type="button" data-place="header">Это про меня?</button>
+      <a class="btn sm js-register" href="#events" data-place="header">Записаться</a>
     </div>
   </div>
 </header>
 
 <main id="top">
 
-  <section class="stage" aria-label="Видео с наших занятий">
+  <section class="stage" data-section="video" aria-label="Видео с наших занятий">
     <div class="stage-media" aria-hidden="true">
       <video class="v-wide" poster="video/lessons-wide.jpg" muted loop playsinline preload="none"><source data-src="video/lessons-wide.mp4" type="video/mp4"><source data-src="video/lessons-wide.webm" type="video/webm"></video>
       <video class="v-tall" poster="video/lessons-2.jpg" muted loop playsinline preload="none"><source data-src="video/lessons-2.mp4" type="video/mp4"><source data-src="video/lessons-2.webm" type="video/webm"></video>
@@ -621,21 +642,21 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
     <div class="stage-grain" aria-hidden="true"></div>
   </section>
 
-  <section class="hero">
+  <section class="hero" data-section="hero">
     <div class="wrap hero-grid">
       <div class="hero-copy">
         <h1 class="hand fly-head"><span class="s">Дело не в тебе.</span> <span class="s">Дело в</span> <span class="b fit">подаче.</span></h1>
         <p class="lead">Речь и уверенность — это навык, и его можно натренировать. Два часа с актрисой Катей Черепановой: голос, самопрезентация и упражнения, после которых тебя слушают.</p>
         <div class="hero-meta"><span><b>Сб, 24 октября</b> · 15:45–18:00</span><span>Rule 25/7, Manhattan</span><span><b>$45</b> + американо</span></div>
         <div class="actions">
-          <a class="btn js-register" href="#events">Записаться</a>
-          <button class="btn ghost js-open-survey" type="button">Это про меня?</button>
+          <a class="btn js-register" href="#events" data-place="hero">Записаться</a>
+          <button class="btn ghost js-open-survey" type="button" data-place="hero">Это про меня?</button>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="events">
+  <section id="events" data-section="events">
     <div class="wrap">
       <h2 class="hand giant">События</h2>
       <div class="cards">
@@ -657,7 +678,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
               </ul>
             </div>
             <div class="actions">
-              <a class="btn sm js-register" href="#events">Записаться →</a>
+              <a class="btn sm js-register" href="#events" data-place="card">Записаться →</a>
               <a class="btn sm light" href="#faq">Подробнее</a>
             </div>
           </div>
@@ -673,7 +694,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
             <p class="meta"><span>Старт после мастер-класса</span><span>Цена скоро</span></p>
             <p class="desc">Занятия раз в неделю, потом каникулы. В финале: вечер историй, видеовизитка или первый Reels.</p>
             <div class="actions">
-              <button class="btn sm js-open-survey" type="button">В лист ожидания →</button>
+              <button class="btn sm js-open-survey" type="button" data-form="waitlist" data-place="card">В лист ожидания →</button>
             </div>
           </div>
         </article>
@@ -681,7 +702,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
     </div>
   </section>
 
-  <section>
+  <section data-section="situations">
     <div class="wrap">
       <h2 class="hand giant right">Знакомо?</h2>
       <div class="gallery" tabindex="0" aria-label="Рисунки: знакомые ситуации">
@@ -700,7 +721,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
     </div>
   </section>
 
-  <section>
+  <section data-section="who">
     <div class="wrap">
       <h2 class="hand giant">Для кого</h2>
       <p class="lead who-lead">Опыт не нужен. Для тех, кто хочет:</p>
@@ -715,7 +736,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
     </div>
   </section>
 
-  <section class="course">
+  <section class="course" data-section="course">
     <div class="wrap">
       <h2 class="hand giant right">Курс</h2>
       <p class="lead">Потоки по 2–3 месяца, потом каникулы. У каждого потока свой финал, с которым ты уходишь.</p>
@@ -725,12 +746,12 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
         <div class="block tone-solid"><span class="tag">Финал</span><h3 class="hand">Первый Reels</h3><p>Ролик для блога, который не стыдно выложить.</p></div>
       </div>
       <div class="actions">
-        <button class="btn ghost js-open-survey" type="button">Хочу в лист ожидания</button>
+        <button class="btn ghost js-open-survey" type="button" data-form="waitlist" data-place="course">Хочу в лист ожидания</button>
       </div>
     </div>
   </section>
 
-  <section>
+  <section data-section="host">
     <div class="wrap">
       <h2 class="hand giant">Кто ведёт</h2>
       <div class="host">
@@ -757,7 +778,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
     </div>
   </section>
 
-  <section id="faq">
+  <section id="faq" data-section="faq">
     <div class="wrap">
       <h2 class="hand giant right">Как у нас</h2>
       <div class="rules-board">
@@ -780,7 +801,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
 
 </main>
 
-<footer>
+<footer data-section="footer">
   <div class="wrap">
     <div class="foot-sheet">
       <span class="foot-tape l" aria-hidden="true"></span><span class="foot-tape r" aria-hidden="true"></span>
@@ -907,8 +928,6 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
   // ---- settings: fill these in when they exist ----
   const REGISTER_URL = 'https://partiful.com/e/yQGMDy3r7GFtRmhYNzRN?c=1Ntc1wTF';      // Eventbrite / Luma / Partiful event link
   const TELEGRAM_URL = 'https://t.me/freeflownyc';      // t.me/… channel link
-  // answers and QR/flyer events go to worker.js (Cloudflare D1); off when the page is opened as a file
-  const API = /^https?:$/.test(location.protocol) ? '/api' : '';
 
   const store = {
     get(k) { try { return sessionStorage.getItem(k); } catch (_) { return null; } },
@@ -922,13 +941,27 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
   const src = params.get('src') || (location.hash === '#qr' ? 'qr-test' : 'direct');
   const fromQR = src !== 'direct';
   document.getElementById('f-src').value = src;
-  const track = kind => { if (API) try { navigator.sendBeacon(API + '/event', JSON.stringify({ kind, src })); } catch (_) {} };
-  if (fromQR && !store.get('ff-scan')) { store.set('ff-scan', '1'); track('scan'); }
+  // ---- analytics: one call per event, sent to GA4 (and any tool added later); ?debug=1 shows them on the page ----
+  const DEBUG = params.has('debug');
+  let dbg = null;
+  const track = (name, p = {}) => {
+    const data = { src, ...p };
+    try { if (typeof window.gtag === 'function') window.gtag('event', name, { ...data, transport_type: 'beacon' }); } catch (_) {}
+    if (!DEBUG) return;
+    console.log('[track]', name, data);
+    if (!dbg) { dbg = document.createElement('div'); dbg.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99;max-width:min(92vw,420px);font:12px/1.35 ui-monospace,monospace;background:rgba(0,0,0,.82);color:#BBE3FC;padding:8px 10px;border-radius:6px;pointer-events:none;white-space:pre-wrap'; document.body.appendChild(dbg); }
+    dbg.textContent = (name + ' ' + JSON.stringify(p) + '\n' + dbg.textContent).split('\n').slice(0, 8).join('\n');
+  };
+  if (fromQR && !store.get('ff-scan')) { store.set('ff-scan', '1'); track('qr_scan'); }
 
   // Apple devices add the event straight from an .ics file; everyone else gets Google Calendar
-  if (/iPhone|iPad|Macintosh/.test(navigator.userAgent)) document.querySelectorAll('.js-cal').forEach(a => { a.href = 'event.ics'; a.removeAttribute('target'); });
+  const apple = /iPhone|iPad|Macintosh/.test(navigator.userAgent);
+  document.querySelectorAll('.js-cal').forEach(a => {
+    if (apple) { a.href = 'event.ics'; a.removeAttribute('target'); }
+    a.addEventListener('click', () => track('calendar_add', { type: apple ? 'apple' : 'google' }));
+  });
   document.querySelectorAll('.js-register').forEach(a => {
-    a.addEventListener('click', () => track('register'));
+    a.addEventListener('click', () => track('register_click', { place: a.dataset.place || 'other' }));
     if (REGISTER_URL) {
       const u = new URL(REGISTER_URL);
       u.searchParams.set('utm_source', src);
@@ -942,6 +975,30 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
     el.addEventListener('dragstart', e => e.preventDefault());
     el.querySelectorAll('img').forEach(img => img.setAttribute('draggable', 'false'));
   });
+  document.querySelectorAll('.js-ig, .js-tg').forEach(a => a.addEventListener('click', () =>
+    track('social_click', { net: a.classList.contains('js-tg') ? 'telegram' : 'instagram', place: a.closest('footer') ? 'footer' : 'header' })));
+  // faq: which answers people look for
+  document.querySelectorAll('#faq details').forEach(d => d.addEventListener('toggle', () => { if (d.open) track('faq_open', { q: d.querySelector('summary').textContent.trim() }); }));
+  // how far people read: each block once per visit. Starts after the intro, which covers the page
+  function startViewTracking() {
+    if (!('IntersectionObserver' in window)) return;
+    const seenSec = new Set();
+    const so = new IntersectionObserver(es => es.forEach(e => {
+      const name = e.target.dataset.section;
+      if (!e.isIntersecting || seenSec.has(name)) return;
+      if (e.intersectionRatio >= .35 || e.intersectionRect.height >= innerHeight * .5) { seenSec.add(name); track('section_view', { section: name }); so.unobserve(e.target); }
+    }), { threshold: [0, .35, .6] });
+    document.querySelectorAll('[data-section]').forEach(el => so.observe(el));
+    // which "Знакомо?" situations get looked at
+    const gal = document.querySelector('.gallery');
+    if (gal) {
+      const cards = [...gal.querySelectorAll('.fly')];
+      const go = new IntersectionObserver(es => es.forEach(e => {   // viewport root: cards clipped by the scroller don't count
+        if (e.isIntersecting) { const n = cards.indexOf(e.target) + 1, img = e.target.querySelector('img'); track('gallery_card', { n, sketch: ((img && img.getAttribute('src')) || '').replace(/^.*\/|\.webp$/g, '') }); go.unobserve(e.target); }
+      }), { threshold: .6 });
+      cards.forEach(c => go.observe(c));
+    }
+  }
   document.querySelectorAll('.js-tg').forEach(a => {
     if (TELEGRAM_URL) { a.href = TELEGRAM_URL; a.target = '_blank'; a.rel = 'noopener'; }
     else { a.removeAttribute('href'); a.setAttribute('aria-disabled', 'true'); a.title = 'Скоро'; a.style.opacity = '.55'; }
@@ -1322,14 +1379,19 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
   const dlg = document.getElementById('survey');
   const body = document.getElementById('survey-body');
   const thanks = document.getElementById('survey-thanks');
-  function openSurvey() {
+  let form = 'quiz';
+  const answered = () => ['mood', 'goal', 'name', 'contact'].filter(n => [...document.querySelectorAll(`#survey-form [name="${n}"]`)].some(i => (i.type === 'radio' || i.type === 'checkbox') ? i.checked : i.value.trim())).length;
+  function openSurvey(place = 'auto', kind = 'quiz') {
+    form = kind;
+    track('quiz_open', { form, place });
     body.hidden = false; thanks.hidden = true;
     if (typeof dlg.showModal === 'function') { if (!dlg.open) dlg.showModal(); }
     else dlg.setAttribute('open', '');
   }
   function closeSurvey() { if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); }
-  document.querySelectorAll('.js-open-survey').forEach(b => b.addEventListener('click', openSurvey));
-  document.getElementById('survey-close').addEventListener('click', () => { if (!body.hidden) { if (!store.getL('ff-survey')) store.setL('ff-survey', 'skipped'); track('survey-skip'); } closeSurvey(); });
+  document.querySelectorAll('.js-open-survey').forEach(b => b.addEventListener('click', () => openSurvey(b.dataset.place || 'other', b.dataset.form || 'quiz')));
+  document.querySelectorAll('#survey-form input[type=radio], #survey-form input[type=checkbox]').forEach(i => i.addEventListener('change', () => { if (i.checked) track('quiz_answer', { form, q: i.name, a: i.value }); }));
+  document.getElementById('survey-close').addEventListener('click', () => { if (!body.hidden) { if (!store.getL('ff-survey')) store.setL('ff-survey', 'skipped'); track('quiz_close', { form, step: answered() }); } closeSurvey(); });
   document.getElementById('survey-done').addEventListener('click', () => { closeSurvey(); document.getElementById('events').scrollIntoView(); });
   dlg.addEventListener('click', e => { if (e.target === dlg) closeSurvey(); });
   document.getElementById('survey-form').addEventListener('submit', async e => {
@@ -1337,11 +1399,12 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
     const data = new FormData(e.target);
     data.set('goal', data.getAll('goal').join(', '));
     data.set('ts', new Date().toISOString());
-    if (API) { try { await fetch(API + '/survey', { method: 'POST', body: data }); } catch (_) {} }
+    // answers themselves go to a Google Form once it exists; analytics only gets the choices, never name or contact
+    track('quiz_submit', { form, contact: data.get('contact') ? 'yes' : 'no', mood: data.get('mood') || '', goal: data.get('goal') || '' });
     store.setL('ff-survey', 'done');
     body.hidden = true; thanks.hidden = false;
   });
-  function afterIntro() { greet(); if (fromQR && !store.getL('ff-survey')) setTimeout(openSurvey, 250); }
+  function afterIntro() { greet(); startViewTracking(); if (fromQR && !store.getL('ff-survey')) setTimeout(() => openSurvey('auto'), 250); }
 
   // ---- intro: "before" gets scribbled over by "after" ----
   const intro = document.getElementById('intro');
@@ -1356,16 +1419,17 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
   path.style.strokeDashoffset = len;
   let done = false, raf = 0;
   const timers = [];
-  function finish() {
+  function finish(how) {
     if (done) return;
     done = true;
+    track(how === 'skip' ? 'intro_skip' : 'intro_done');
     timers.forEach(clearTimeout); cancelAnimationFrame(raf);
     intro.classList.add('out');
     document.documentElement.style.overflow = '';
     setTimeout(() => { intro.remove(); afterIntro(); }, 600);
   }
-  document.getElementById('intro-skip').addEventListener('click', finish);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') finish(); }, { once: true });
+  document.getElementById('intro-skip').addEventListener('click', () => finish('skip'));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') finish('skip'); }, { once: true });
   requestAnimationFrame(() => intro.classList.remove('start'));
   timers.push(setTimeout(() => {
     const t0 = performance.now(), dur = reduce ? 0 : 1300;
