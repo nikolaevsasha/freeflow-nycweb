@@ -512,6 +512,11 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
 .survey-result { display: grid; gap: 12px; justify-items: start; margin-top: 14px; }
 .result-line { font-size: 21px; line-height: 1.3; }
 .result-note { color: var(--soft); }
+.lead { display: grid; gap: 8px; width: 100%; margin-top: 10px; }
+.lead label { font-weight: 600; }
+.lead-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.lead-row input { flex: 1 1 180px; min-width: 0; font: inherit; font-size: 18px; padding: 11px 14px; color: var(--ink); border: 2px solid var(--ink); border-radius: var(--wobble-2); background: var(--field); }
+.lead-msg { min-height: 1.2em; color: var(--soft); }
 @media (max-width: 599px) {
   dialog.survey { width: 100vw; max-width: 100vw; margin: auto 0 0; border-radius: 22px 22px 0 0; border-bottom: 0; box-shadow: none; max-height: 92vh; }
   .survey-scroll { max-height: 92vh; padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px)); }
@@ -795,7 +800,12 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
         </div>
         <div>
           <p class="label">Вопросы и ответы</p>
-          <details><summary>Я не актёр. Мне можно?</summary><p>Да, опыт не нужен. Подойдёт и тем, кто хочет в актёры, и тем, кому просто нужно увереннее говорить.</p></details>
+          <details><summary>Кому подойдёт мастер-класс?</summary><p>Для тех, кто хочет свободнее выражать мысли, увереннее звучать и чувствовать себя комфортнее в общении.</p></details>
+          <details><summary>А если я очень стесняюсь?</summary><p>Для этого и существует безопасное пространство для практики. Никто не обязан сразу выступать перед всеми.</p></details>
+          <details><summary>Нужна ли специальная подготовка?</summary><p>Нет, мастер-класс рассчитан и на новичков.</p></details>
+          <details><summary>Что мы будем делать?</summary><p>Практические упражнения на голос, речь, выразительность и свободу самовыражения.</p></details>
+          <details><summary>Что изменится после одного занятия?</summary><p>Ты познакомишься с инструментами и упражнениями, которые сможешь применять самостоятельно.</p></details>
+          <details><summary>Можно ли прийти одному?</summary><p>Конечно! На такие занятия совершенно нормально приходить без компании.</p></details>
           <details><summary>Как оплатить?</summary><p>Наличными или через Zelle.</p></details>
           <details><summary>На каком языке?</summary><p>На русском.</p></details>
         </div>
@@ -837,6 +847,11 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
       <p class="result-line" id="survey-line"></p>
       <p class="result-note" id="survey-note"></p>
       <div class="actions" id="survey-actions"></div>
+      <form class="lead" id="lead" hidden novalidate>
+        <label for="lead-ig" id="lead-label">Оставь свой Instagram — Катя напишет перед занятием</label>
+        <div class="lead-row"><input id="lead-ig" name="instagram" type="text" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="@username"><button class="btn sm" type="submit">Отправить</button></div>
+        <p class="lead-msg" id="lead-msg" role="status"></p>
+      </form>
     </div>
   </div>
 </dialog>
@@ -1345,6 +1360,9 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
   // ---- surveys: one tap per question, then a result. Each question asks about one thing only:
   // quiz = what happens (symptom) and what for (goal); waitlist = which course final and when.
   // Choices go to analytics; contacts are not asked here (Partiful and Telegram collect them).
+  // Instagram handles go to a Google Form (its Sheet), never to analytics. Fill in from the form's link;
+  // until then the field stays hidden.
+  const LEADS = { url: '', entry: { instagram: '', answers: '', src: '', form: '' } };
   const FORMS = {
     quiz: {
       title: 'Это про тебя?', sub: 'Два вопроса, по одному тапу.',
@@ -1366,6 +1384,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
         life: 'Пригодится на работе, на свидании и в компании.',
       },
       actions: [['register', 'Записаться на 24.10'], ['details', 'Подробнее']],
+      lead: 'Оставь свой Instagram — Катя напишет перед занятием',
     },
     waitlist: {
       title: 'Лист ожидания', sub: 'Курс стартует после мастер-класса.',
@@ -1377,6 +1396,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
       line: () => 'Запись на курс сначала получат подписчики канала. Там же расписание и цена.',
       note: () => '',
       actions: [['telegram', 'Подписаться в Telegram'], ['register', 'Записаться на мастер-класс']],
+      lead: 'Или оставь Instagram — напишем, когда откроем запись',
     },
   };
   const dlg = document.getElementById('survey');
@@ -1410,9 +1430,26 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
       if (b.dataset.act === 'telegram') track('social_click', { network: 'telegram', place: form });
       if (b.dataset.act === 'details') { closeSurvey(); $('events').scrollIntoView(); }
     }));
+    const lead = $('lead');
+    lead.hidden = !LEADS.url; lead.reset(); $('lead-msg').textContent = ''; lead.querySelector('button').disabled = false;
+    $('lead-label').textContent = F.lead;
     $('survey-result').hidden = false;
     track('quiz_submit', { form, ...answers });
   }
+  $('lead').addEventListener('submit', e => {
+    e.preventDefault();
+    const raw = $('lead-ig').value.trim().replace(/^https?:\/\/(www\.)?instagram\.com\//i, '').replace(/[/?#].*$/, '').replace(/^@/, '');
+    if (!/^[A-Za-z0-9._]{1,30}$/.test(raw)) { $('lead-msg').textContent = 'Проверь ник: латиница, цифры, точка или _'; $('lead-ig').focus(); return; }
+    const body = new URLSearchParams();
+    body.append(LEADS.entry.instagram, '@' + raw);
+    body.append(LEADS.entry.answers, Object.entries(answers).map(([k, v]) => k + '=' + v).join('; '));
+    body.append(LEADS.entry.src, src);
+    body.append(LEADS.entry.form, form);
+    fetch(LEADS.url, { method: 'POST', mode: 'no-cors', body }).catch(() => {});   // Google Forms answers opaquely
+    track('quiz_contact', { form });                                              // the fact, not the handle
+    $('lead-msg').textContent = 'Записали @' + raw + '. Спасибо!';
+    $('lead').querySelector('button').disabled = true;
+  });
   function openSurvey(place, kind) {
     form = kind; step = 0; answers = {};
     track('quiz_open', { form, place });
