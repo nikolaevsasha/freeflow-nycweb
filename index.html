@@ -976,7 +976,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
     el.querySelectorAll('img').forEach(img => img.setAttribute('draggable', 'false'));
   });
   document.querySelectorAll('.js-ig, .js-tg').forEach(a => a.addEventListener('click', () =>
-    track('social_click', { net: a.classList.contains('js-tg') ? 'telegram' : 'instagram', place: a.closest('footer') ? 'footer' : 'header' })));
+    track('social_click', { network: a.classList.contains('js-tg') ? 'telegram' : 'instagram', place: a.closest('footer') ? 'footer' : 'header' })));
   // faq: which answers people look for
   document.querySelectorAll('#faq details').forEach(d => d.addEventListener('toggle', () => { if (d.open) track('faq_open', { q: d.querySelector('summary').textContent.trim() }); }));
   // how far people read: each block once per visit. Starts after the intro, which covers the page
@@ -994,7 +994,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
     if (gal) {
       const cards = [...gal.querySelectorAll('.fly')];
       const go = new IntersectionObserver(es => es.forEach(e => {   // viewport root: cards clipped by the scroller don't count
-        if (e.isIntersecting) { const n = cards.indexOf(e.target) + 1, img = e.target.querySelector('img'); track('gallery_card', { n, sketch: ((img && img.getAttribute('src')) || '').replace(/^.*\/|\.webp$/g, '') }); go.unobserve(e.target); }
+        if (e.isIntersecting) { const n = cards.indexOf(e.target) + 1, img = e.target.querySelector('img'); track('gallery_view', { n, sketch: ((img && img.getAttribute('src')) || '').replace(/^.*\/|\.webp$/g, '') }); go.unobserve(e.target); }
       }), { threshold: .6 });
       cards.forEach(c => go.observe(c));
     }
