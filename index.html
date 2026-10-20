@@ -33,6 +33,16 @@
       if (localStorage.getItem('ff-notrack')) window['ga-disable-G-Y10LQ57XQ2'] = true;
     } catch (e) {}
     gtag('config', 'G-Y10LQ57XQ2', cfg);
+    // Microsoft Clarity: session recordings and heatmaps, same ?notrack opt-out; tagged with flyer and spot to filter recordings
+    if (!window['ga-disable-G-Y10LQ57XQ2']) {
+      (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "z0imuq890h");
+      if (src) window.clarity('set', 'src', src);
+      if (q.get('at')) window.clarity('set', 'spot', q.get('at').toUpperCase());
+    }
   })();
 </script>
 <meta name="description" content="Мастер-класс по голосу и речи на русском в Нью-Йорке. Ведёт актриса театра и кино Катя Черепанова. Сб, 24 октября, Rule 25/7.">
@@ -932,6 +942,7 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
   const track = (name, p = {}) => {
     const data = spot ? { src, spot, ...p } : { src, ...p };
     try { if (typeof window.gtag === 'function') window.gtag('event', name, data); } catch (_) {}   // gtag already sends with sendBeacon where it can
+    try { if (typeof window.clarity === 'function') window.clarity('event', name); } catch (_) {}    // Clarity: filter recordings by event
     if (!DEBUG) return;
     console.log('[track]', name, data);
     if (!dbg) { dbg = document.createElement('div'); dbg.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99;max-width:min(92vw,420px);font:12px/1.35 ui-monospace,monospace;background:rgba(0,0,0,.82);color:#BBE3FC;padding:8px 10px;border-radius:6px;pointer-events:none;white-space:pre-wrap'; document.body.appendChild(dbg); }
