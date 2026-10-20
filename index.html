@@ -398,7 +398,7 @@ details a { color: var(--ink); text-underline-offset: 3px; }
 /* Katya at work: small taped photos, scroll sideways on phones */
 .work { display: flex; justify-content: space-between; gap: clamp(14px, 2.2vw, 28px); margin-top: clamp(30px, 5vw, 56px); padding: 20px 6px 24px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
 .work::-webkit-scrollbar { display: none; }
-.shot { position: relative; flex: 0 0 clamp(140px, 13.4vw, 166px); margin: 0; padding: 9px 9px 26px; background: #fff; box-shadow: 0 6px 16px var(--shadow-c); scroll-snap-align: start; transform: rotate(var(--r, -1.6deg)); }
+.shot { position: relative; flex: 0 0 clamp(150px, 15.5vw, 196px); margin: 0; padding: 9px 9px 26px; background: #fff; box-shadow: 0 6px 16px var(--shadow-c); scroll-snap-align: start; transform: rotate(var(--r, -1.6deg)); }
 .shot:nth-child(2n) { --r: 1.9deg; }
 .shot:nth-child(3n) { --r: -.7deg; }
 .shot img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
@@ -722,7 +722,6 @@ dialog.survey::backdrop { background: rgba(98, 18, 31, .86); }
         <figure class="shot" role="listitem"><img src="img/work-stage.webp" alt="Катя в спектакле, со скрипкой" loading="lazy"></figure>
         <figure class="shot" role="listitem"><img src="img/work-monitor-2.webp" alt="Катя в кадре, вид с монитора камеры" loading="lazy"></figure>
         <figure class="shot" role="listitem"><img src="img/work-studio.webp" alt="Катя на съёмке в студии" loading="lazy"></figure>
-        <figure class="shot" role="listitem"><img src="img/work-film.webp" alt="Кадр из фильма с Катей" loading="lazy"></figure>
       </div>
     </div>
   </section>
